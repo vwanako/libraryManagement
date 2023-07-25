@@ -1,6 +1,5 @@
 # libraryManagement
-🚧 🛠️ In Development 🛠️ 🚧
-
+##**🚧 🛠️ In Development 🛠️ 🚧**
 **👷‍♀️ This is a Work in Progress! 👷‍♂️**
 
 **🚀 Future Plans 🚀**
@@ -12,4 +11,6 @@ These are a few of the features planned for this project!
   - Generating a fine in case the book is damaged or lost, based on it's price.
   - And others!
 
-👨‍💻This project is being developed by a single person (me, vwanako!) as a study project for developing my C++ skills. I don't have any plans on releasing it as a real piece of software.
+
+
+*👨‍💻This project is being developed by a single person (me, vwanako!) as a study project for developing my C++ skills. I don't have any plans on releasing it as a real piece of software.*
