@@ -4,9 +4,9 @@
 int main()
 {
     Book book1("The Picture of Dorian Gray", "Oscar Wilde", "Horror", true);
-    User user1("Victor", "vwanako", "123", "victor@gmail.com");
-    User user2("Athena", "athena", "123", "athena@gmail.com");
+    Book book2("Anna Karenina", "Leo Tolstoy", "Realism", true);
+    User user1("Victor", "vwanako", "123", "test@email.com");
+    User user2("Athena", "athena", "123", "test@email.com");
 
-    user1.addBookToHistory(book1);
     return 0;
 }

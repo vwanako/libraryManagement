@@ -19,7 +19,7 @@ public:
         setUsername(username);
         setPassword(password);
         setEmail(email);
-        string filename = username + "_bookHistory.txt";
+        filename = username + "_bookHistory.txt";
 
         bookHistory.open(filename, std::fstream::out | std::fstream::app);
         if (!bookHistory.is_open())
@@ -85,7 +85,7 @@ public:
 
     void removeBookFromHistory(const Book &book)
     {
-        bookHistory.open(filename, ios::in | ios::out); // open files both in read and write mode.
+        bookHistory.open(filename, ios::in); // open file in read mode.
 
         if (!bookHistory.is_open())
         {
@@ -104,8 +104,14 @@ public:
             }
         }
 
-        bookHistory.clear();
-        bookHistory.seekp(0);
+        bookHistory.close();
+
+        bookHistory.open(filename, ios::out); // open file in write mode.
+        if (!bookHistory.is_open())
+        {
+            cerr << "Error opening file for writing: " << filename << endl;
+            return;
+        }
 
         for (const auto &title : updatedHistory)
         {
