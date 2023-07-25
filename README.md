@@ -1,5 +1,6 @@
 # libraryManagement
-##**🚧 🛠️ In Development 🛠️ 🚧**
+## **🚧 🛠️ In Development 🛠️ 🚧**
+
 **👷‍♀️ This is a Work in Progress! 👷‍♂️**
 
 **🚀 Future Plans 🚀**
