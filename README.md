@@ -4,6 +4,7 @@
 **👷‍♀️ This is a Work in Progress! 👷‍♂️**
 
 **🚀 Future Plans 🚀**
+
 These are a few of the features planned for this project!
   - Adding users, managing their borrowing history.
   - Allowing users to see their own borrowing history and the return date for each book.
