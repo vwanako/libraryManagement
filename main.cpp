@@ -6,7 +6,7 @@ int main()
 
     admin testUser("John Doe", "johndoebooks", "1234", "johndoe@gmail.com");
 
-    testUser.createUser();
+    testUser.createBook();
 
     return 0;
 }

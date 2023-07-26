@@ -3,22 +3,31 @@
 #include <string>
 using namespace std;
 
+fstream booksFile;
+
 class Book
 {
 private:
     string title, author, genre;
+    float price;
     int bid;
     bool available;
 
 public:
     // constructor
 
-    Book(string title, string author, string genre, bool available)
+    Book(string title, string author, string genre, float price)
     {
         setTitle(title);
         setAuthor(author);
         setGenre(genre);
-        setAvailable(available);
+        setAvailable(true);
+
+        booksFile.open("books.txt", ios::app);
+        if (booksFile.is_open())
+        {
+            booksFile << "title: " << title << " | author: " << author << " | genre: " << genre << " | price: " << price << endl;
+        }
     }
 
     // setters

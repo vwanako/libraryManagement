@@ -33,7 +33,7 @@ public:
         usersFile.open("users.txt", ios::app);
         if (usersFile.is_open())
         {
-            usersFile << username << " | " << name << " | " << password << " | " << email << " | " << userType << endl;
+            usersFile << "name: " << name << " | username: " << username << " | password: " << password << " | email: " << email << " | user type: " << userType << endl;
             usersFile.close();
         }
         else
@@ -143,6 +143,24 @@ public:
 
         bookHistory.close();
     }
+
+    // this is used to check whether the username exists. it's in createUser, so that in case a user already exists the program won't create a duplicate in the database and it will be in the login menu, so that if the user types a username that doesn't exist, they get an error message and are asked to type again.
+
+    // bool usernameExists(const string &username)
+    // {
+    //     usersFile.open("users.txt", ios::in);
+    //     if (usersFile.is_open())
+    //     {
+    //         string line;
+    //         while (getline(usersFile, line))
+    //         {
+    //             string::size_type usernamePos = line.find("username: ");
+    //             if (usernamePos != string::npos)
+    //             {
+    //                             }
+    //         }
+    //     }
+    // }
 };
 
 class regularUser : public User
@@ -260,5 +278,33 @@ public:
 
         sleep(1);
         cout << "\nNew user has been sucessfully created!" << endl;
+    }
+
+    void createBook()
+    {
+        string tempTitle, tempAuthor, tempGenre;
+        float tempPrice;
+
+        cout << "New book menu.\nTitle: ";
+        getline(cin, tempTitle);
+        cout << "Author: ";
+        getline(cin, tempAuthor);
+        cout << "Genre: ";
+        getline(cin, tempGenre);
+        cout << "Price: ";
+        cin >> tempPrice;
+
+        Book newBook(tempTitle, tempAuthor, tempGenre, tempPrice);
+
+        cout << "\nNew book being created";
+        for (int i = 0; i < 3; i++)
+        {
+            sleep(1);
+            cout << ".";
+            // this makes "New user book created..." appear on the console with a one second delay for each "."
+        }
+
+        sleep(1);
+        cout << "\nNew book has been sucessfully created!" << endl;
     }
 };
