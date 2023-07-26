@@ -3,10 +3,9 @@
 
 int main()
 {
+    // admin newAdmin("john doe", "johndoeadmin", "1234", "johndoe@mail.com");
 
-    admin testUser("John Doe", "johndoebooks", "1234", "johndoe@gmail.com");
-
-    testUser.createBook();
+    // newAdmin.createUser();
 
     return 0;
 }

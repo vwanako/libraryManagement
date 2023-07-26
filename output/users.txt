@@ -1,0 +1,2 @@
+name: john doe | username: johndoeadmin | password: 1234 | email: johndoe@mail.com | user type: admin
+name: Caio | username: caiolivros | password: 1234 | email: caio@email.com | user type: user

@@ -10,6 +10,28 @@ using namespace std;
 
 fstream usersFile;
 
+vector<string> parse(const string &line)
+{
+    // each text between ","
+    vector<string> tokens;
+    string tempLine;
+
+    for (int i = 0; i < line.size(); i++)
+    {
+        if (line[i] == ',')
+        {
+            tokens.push_back(tempLine);
+            tempLine.clear();
+            continue;
+        }
+
+        tempLine += line[i];
+    }
+
+    tokens.push_back(tempLine);
+    return tokens;
+}
+
 class User
 {
 protected:
@@ -18,7 +40,8 @@ protected:
     fstream bookHistory;
 
 public:
-    // constructor
+    // constructors
+
     User(string name, string username, string password, string email, string userType)
     {
         setName(name);
@@ -33,7 +56,7 @@ public:
         usersFile.open("users.txt", ios::app);
         if (usersFile.is_open())
         {
-            usersFile << "name: " << name << " | username: " << username << " | password: " << password << " | email: " << email << " | user type: " << userType << endl;
+            usersFile << username << "," << name << "," << password << "," << email << "," << userType << endl;
             usersFile.close();
         }
         else
@@ -144,23 +167,46 @@ public:
         bookHistory.close();
     }
 
-    // this is used to check whether the username exists. it's in createUser, so that in case a user already exists the program won't create a duplicate in the database and it will be in the login menu, so that if the user types a username that doesn't exist, they get an error message and are asked to type again.
+    void login()
+    {
+        string username, password, line;
+        string lineUsername, lineName, linePassword, lineEmail;
 
-    // bool usernameExists(const string &username)
-    // {
-    //     usersFile.open("users.txt", ios::in);
-    //     if (usersFile.is_open())
-    //     {
-    //         string line;
-    //         while (getline(usersFile, line))
-    //         {
-    //             string::size_type usernamePos = line.find("username: ");
-    //             if (usernamePos != string::npos)
-    //             {
-    //                             }
-    //         }
-    //     }
-    // }
+        cout << "Enter username: ";
+        getline(cin, username);
+        cout << "Enter password: ";
+        getline(cin, password);
+
+        while (!authenticate(username, password))
+        {
+            cout << "Username or password incorrect. Try again.";
+            cout << "Enter username: ";
+            getline(cin, username);
+            cout << "Enter password: ";
+            getline(cin, password);
+        }
+
+        cout << "Login sucessfull." << endl;
+    }
+
+    bool authenticate(const string &username, const string &password)
+    {
+        usersFile.open("users.txt", ios::in);
+        if (usersFile.is_open())
+        {
+            string line;
+            while (getline(usersFile, line))
+            {
+                vector<string> tokens = parse(line);
+                if (tokens[0] == username && tokens[2] == password)
+                {
+                    usersFile.close();
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 };
 
 class regularUser : public User
