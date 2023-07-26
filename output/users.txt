@@ -1,0 +1,2 @@
+johndoebooks | John Doe | 1234 | johndoe@gmail.com | admin
+johnsmith | John Smith | 1234 | johnsmith@mail.com | user

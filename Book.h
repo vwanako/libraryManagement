@@ -7,6 +7,7 @@ class Book
 {
 private:
     string title, author, genre;
+    int bid;
     bool available;
 
 public:

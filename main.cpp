@@ -3,10 +3,10 @@
 
 int main()
 {
-    Book book1("The Picture of Dorian Gray", "Oscar Wilde", "Horror", true);
-    Book book2("Anna Karenina", "Leo Tolstoy", "Realism", true);
-    User user1("Victor", "vwanako", "123", "test@email.com");
-    User user2("Athena", "athena", "123", "test@email.com");
+
+    admin testUser("John Doe", "johndoebooks", "1234", "johndoe@gmail.com");
+
+    testUser.createUser();
 
     return 0;
 }

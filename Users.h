@@ -2,18 +2,24 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include <algorithm>
+#include <cctype>
+#include <unistd.h>
 #include "Book.h"
 using namespace std;
 
+fstream usersFile;
+
 class User
 {
-private:
-    string name, username, password, email, filename;
+protected:
+    string name, username, password, email, filename, userType;
+    int uid;
     fstream bookHistory;
 
 public:
     // constructor
-    User(string name, string username, string password, string email)
+    User(string name, string username, string password, string email, string userType)
     {
         setName(name);
         setUsername(username);
@@ -21,12 +27,19 @@ public:
         setEmail(email);
         filename = username + "_bookHistory.txt";
 
-        bookHistory.open(filename, std::fstream::out | std::fstream::app);
-        if (!bookHistory.is_open())
+        setUserType(userType);
+
+        // append user information to the users.txt file
+        usersFile.open("users.txt", ios::app);
+        if (usersFile.is_open())
         {
-            std::cerr << "Error creating/Opening file: " << filename << std::endl;
+            usersFile << username << " | " << name << " | " << password << " | " << email << " | " << userType << endl;
+            usersFile.close();
         }
-        bookHistory.close();
+        else
+        {
+            std::cerr << "Error creating/opening file: users.txt" << std::endl;
+        }
     }
 
     // setters
@@ -48,6 +61,11 @@ public:
         this->email = email;
     }
 
+    void setUserType(string userType)
+    {
+        this->userType = userType;
+    }
+
     // getters
 
     string getName() const
@@ -67,6 +85,11 @@ public:
         return email;
     }
 
+    string getUserType() const
+    {
+        return userType;
+    }
+
     // methods
 
     void addBookToHistory(const Book &book)
@@ -74,7 +97,7 @@ public:
         bookHistory.open(filename, ios::app);
         if (bookHistory.is_open())
         {
-            bookHistory << book.getTitle() << endl;
+            bookHistory << "Title: " << book.getTitle() << "Issue date: " << endl;
             bookHistory.close();
         }
         else
@@ -119,5 +142,123 @@ public:
         }
 
         bookHistory.close();
+    }
+};
+
+class regularUser : public User
+{
+private:
+    fstream issuedBooks;
+    fstream bookHistory;
+
+public:
+    regularUser(string name, string username, string password, string email) : User(name, username, password, email, "user") // Call the base class constructor using member initializer list. Adds "user", so that when when admins create a new "user" object, they're a regularUser object.
+    {
+        string issuedBooksFilename = username + "_issuedBooks.txt";
+
+        issuedBooks.open(issuedBooksFilename, std::fstream::out | std::fstream::app);
+        if (!issuedBooks.is_open())
+        {
+            std::cerr << "Error creating/Opening file: " << issuedBooksFilename << std::endl;
+        }
+        issuedBooks.close();
+
+        // Create bookHistory file for regularUser
+        filename = username + "_bookHistory.txt";
+        bookHistory.open(filename, std::ios::out | std::ios::app);
+        if (!bookHistory.is_open())
+        {
+            std::cerr << "Error creating/Opening file: " << filename << std::endl;
+        }
+        bookHistory.close();
+    }
+
+    void viewBooks()
+    {
+    }
+    void myBooks()
+    {
+        string line;
+
+        bookHistory.open(filename, ios::in);
+        if (!bookHistory.is_open())
+        {
+            cerr << "Error opening book history." << endl;
+            return;
+        }
+
+        while (getline(bookHistory, line))
+        {
+            cout << line << endl;
+        }
+    }
+};
+
+class admin : public User
+{
+private:
+    // we will add any private attributes for the admin class here.
+public:
+    // constructor
+    admin(string name, string username, string password, string email) : User(name, username, password, email, "admin") // here, we redirect users created with type "admin"
+    {
+    }
+
+    // methods
+
+    void createUser()
+    {
+        // we will create and store temporary varibles for each attribute our constructor asks for.
+
+        string tempName, tempUsername, tempPassword, tempEmail, tempUserType;
+
+        cout << "New user menu.\nName: ";
+        getline(cin, tempName);
+        cout << "Username: ";
+        getline(cin, tempUsername);
+        cout << "Password: ";
+        getline(cin, tempPassword);
+        cout << "Email: ";
+        getline(cin, tempEmail);
+
+        // the user type variable can only be two things: 'admin' or 'user'. we will use this loop to validate the input, making sure to only accept those values.
+        while (true)
+        {
+            cout << "\nUser type [user/admin]: " << endl;
+            cin >> tempUserType;
+
+            // convert the input to lowercase to make the validation case-insensitive
+            transform(userType.begin(), userType.end(), userType.begin(), ::tolower);
+
+            if (tempUserType == "user" || tempUserType == "admin")
+            {
+                break;
+                // leaves the loop if appropriate input is received.
+            }
+            else
+            {
+                cout << "\nInvalid user type. Please enter 'user' or 'admin'." << endl;
+            }
+        }
+
+        if (tempUserType == "user")
+        {
+            regularUser newUser(tempName, tempUsername, tempPassword, tempEmail);
+        }
+        else // since the user type has already been validated, if it's not "user", it has to be "admin", so we don't need an else if condition, only and else will be fine.
+        {
+            admin newAdmin(tempName, tempUsername, tempPassword, tempEmail);
+        }
+
+        cout << "\nNew user being created";
+        for (int i = 0; i < 3; i++)
+        {
+            sleep(1);
+            cout << ".";
+            // this makes "New user being created..." appear on the console with a one second delay for each "."
+        }
+
+        sleep(1);
+        cout << "\nNew user has been sucessfully created!" << endl;
     }
 };
