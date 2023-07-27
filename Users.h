@@ -36,7 +36,7 @@ class User
 {
 protected:
     string name, username, password, email, filename, userType;
-    int uid;
+    bool isLoggedin;
     fstream bookHistory;
 
 public:
@@ -48,6 +48,7 @@ public:
         setUsername(username);
         setPassword(password);
         setEmail(email);
+        setLogin(false);
         filename = username + "_bookHistory.txt";
 
         setUserType(userType);
@@ -89,6 +90,11 @@ public:
         this->userType = userType;
     }
 
+    void setLogin(bool isLoggedIn)
+    {
+        this->isLoggedin = isLoggedIn;
+    }
+
     // getters
 
     string getName() const
@@ -111,6 +117,11 @@ public:
     string getUserType() const
     {
         return userType;
+    }
+
+    bool getLogin() const
+    {
+        return isLoggedin;
     }
 
     // methods
@@ -187,6 +198,7 @@ public:
         }
 
         cout << "Login sucessfull." << endl;
+        setLogin(true);
     }
 
     bool authenticate(const string &username, const string &password)
