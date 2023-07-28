@@ -1,10 +1,52 @@
 #include <iostream>
 #include "Users.h"
 
-// void userMenu()
-// {
-//     if ()
-// }
+void userMenu(const User &user)
+{
+    string usertype = user.getUserType();
+    char userInput;
+
+    if (usertype == "user")
+    {
+        while (true)
+        {
+            cout << "\nEnter action:\n1: View library collection\n2: View my currently issued books\n3: View my book history\nq: quit program";
+            cin >> userInput;
+            switch (userInput)
+            {
+            case '1':
+                break;
+            case '2':
+                break;
+            case 'q':
+                return;
+            default:
+                cout << "\nInvalid input. Please try again.";
+                break;
+            }
+        }
+    }
+    else if (usertype == "admin")
+    {
+        while (true)
+        {
+            cout << "\nEnter action:\n1: View library collection\n2: View users\n3: View issued books\n4: Issue a book\n5: Return a book\n6: Create new user\n7: Create new book\nq: quit program";
+            cin >> userInput;
+            switch (userInput)
+            {
+            case '1':
+                break;
+            case '2':
+                break;
+            case 'q':
+                return;
+            default:
+                cout << "\nInvalid input. Please try again.";
+                break;
+            }
+        }
+    }
+}
 
 struct Result
 {
@@ -96,7 +138,7 @@ int main()
     while (true)
     {
 
-        cout << "\nEnter action: \n1: Login \nq: quit program" << endl;
+        cout << "\nEnter action:\n1: Login\nq: quit program";
         cin >> userInput;
         switch (userInput)
         {
@@ -106,6 +148,9 @@ int main()
             break;
         case 'q':
             return 0;
+        default:
+            cout << "\nInvalid input. Please try again.";
+            break;
         }
     }
 
