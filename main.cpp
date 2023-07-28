@@ -8,20 +8,20 @@
 
 int main()
 {
-    // admin newAdmin("john doe", "johndoeadmin", "1234", "johndoe@mail.com");
-
-    // newAdmin.createUser();
 
     char userInput;
-    User emptyUser;
+    User loggedInUser;
 
     while (true)
     {
 
-        cout << "Enter action: \n1: Login \nq: quit program" << endl;
+        cout << "\nEnter action: \n1: Login \nq: quit program" << endl;
+        cin >> userInput;
         switch (userInput)
         {
         case '1':
+            loggedInUser = login();
+            cout << "user information: " << loggedInUser.getUsername() << "," << loggedInUser.getName() << "," << loggedInUser.getPassword() << "," << loggedInUser.getEmail();
             break;
         case 'q':
             return 0;

@@ -1,0 +1,2 @@
+johndoeadmin,john doe,1234,johndoe@mail.com,admin
+testuser,TestUser,1234,test@mail.com,user

@@ -10,34 +10,11 @@ using namespace std;
 
 fstream usersFile;
 
-vector<string> parse(const string &line)
-{
-    // each text between ","
-    vector<string> tokens;
-    string tempLine;
-
-    for (int i = 0; i < line.size(); i++)
-    {
-        if (line[i] == ',')
-        {
-            tokens.push_back(tempLine);
-            tempLine.clear();
-            continue;
-        }
-
-        tempLine += line[i];
-    }
-
-    tokens.push_back(tempLine);
-    return tokens;
-}
-
 class User
 {
 protected:
     string name, username, password, email, filename, userType;
     bool isLoggedin;
-    fstream bookHistory;
 
 public:
     // constructors
@@ -48,7 +25,7 @@ public:
         setUsername(username);
         setPassword(password);
         setEmail(email);
-        setLogin(false);
+        // setLogin(false);
         filename = username + "_bookHistory.txt";
 
         setUserType(userType);
@@ -94,11 +71,6 @@ public:
         this->userType = userType;
     }
 
-    void setLogin(bool isLoggedIn)
-    {
-        this->isLoggedin = isLoggedIn;
-    }
-
     // getters
 
     string getName() const
@@ -123,106 +95,7 @@ public:
         return userType;
     }
 
-    bool getLogin() const
-    {
-        return isLoggedin;
-    }
-
     // methods
-
-    void addBookToHistory(const Book &book)
-    {
-        bookHistory.open(filename, ios::app);
-        if (bookHistory.is_open())
-        {
-            bookHistory << "Title: " << book.getTitle() << "Issue date: " << endl;
-            bookHistory.close();
-        }
-        else
-        {
-            cerr << "Error opening file: " << filename << endl;
-        }
-    }
-
-    void removeBookFromHistory(const Book &book)
-    {
-        bookHistory.open(filename, ios::in); // open file in read mode.
-
-        if (!bookHistory.is_open())
-        {
-            cerr << "Error opening file: " << filename << endl;
-            return;
-        }
-
-        string line;
-        vector<string> updatedHistory;
-
-        while (getline(bookHistory, line))
-        {
-            if (line != book.getTitle())
-            {
-                updatedHistory.push_back(line);
-            }
-        }
-
-        bookHistory.close();
-
-        bookHistory.open(filename, ios::out); // open file in write mode.
-        if (!bookHistory.is_open())
-        {
-            cerr << "Error opening file for writing: " << filename << endl;
-            return;
-        }
-
-        for (const auto &title : updatedHistory)
-        {
-            bookHistory << title << "\n";
-        }
-
-        bookHistory.close();
-    }
-
-    void login(User user)
-    {
-        string username, password, line;
-        string lineUsername, lineName, linePassword, lineEmail;
-
-        cout << "Enter username: ";
-        getline(cin, username);
-        cout << "Enter password: ";
-        getline(cin, password);
-
-        while (!authenticate(username, password, user))
-        {
-            cout << "Username or password incorrect. Try again.";
-            cout << "Enter username: ";
-            getline(cin, username);
-            cout << "Enter password: ";
-            getline(cin, password);
-        }
-
-        cout << "Login sucessfull." << endl;
-        setLogin(true);
-    }
-
-    bool authenticate(const string &username, const string &password, User &user)
-    {
-        usersFile.open("users.txt", ios::in);
-        if (usersFile.is_open())
-        {
-            string line;
-            while (getline(usersFile, line))
-            {
-                vector<string> tokens = parse(line);
-                if (tokens[0] == username && tokens[2] == password)
-                {
-                    usersFile.close();
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
 };
 
 class regularUser : public User
@@ -370,3 +243,84 @@ public:
         cout << "\nNew book has been sucessfully created!" << endl;
     }
 };
+
+struct Result
+{
+    User user;
+    bool error;
+};
+
+vector<string> parse(const string &line)
+{
+    // each text between ","
+    vector<string> tokens;
+    string tempLine;
+
+    for (int i = 0; i < line.size(); i++)
+    {
+        if (line[i] == ',')
+        {
+            tokens.push_back(tempLine);
+            tempLine.clear();
+            continue;
+        }
+
+        tempLine += line[i];
+    }
+
+    tokens.push_back(tempLine);
+    return tokens;
+}
+
+Result authenticate(const string &username, const string &password)
+{
+    Result result;
+    usersFile.open("users.txt", ios::in);
+    if (usersFile.is_open())
+    {
+        string line;
+        while (getline(usersFile, line))
+        {
+            vector<string> tokens = parse(line);
+            if (tokens[0] == username && tokens[2] == password)
+            {
+                usersFile.close();
+                result.user.setUsername(tokens[0]);
+                result.user.setName(tokens[1]);
+                result.user.setPassword(tokens[2]);
+                result.user.setEmail(tokens[3]);
+                result.error = false;
+
+                return result;
+            }
+        }
+    }
+    result.error = true;
+    return result;
+}
+
+User login()
+{
+    string username, password, line;
+    string lineUsername, lineName, linePassword, lineEmail;
+
+    cout << "\nEnter username: ";
+    cin >> username;
+    cout << "\nEnter password: ";
+    cin >> password;
+
+    while (true)
+    {
+        auto result = authenticate(username, password);
+        if (!result.error)
+        {
+            cout << "Login sucessfull." << endl;
+            return result.user;
+        }
+        cout << "Username or password incorrect. Try again.";
+        cout << "Enter username: ";
+        getline(cin, username);
+        cout << "Enter password: ";
+        getline(cin, password);
+    }
+}
