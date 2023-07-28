@@ -66,6 +66,10 @@ public:
         }
     }
 
+    User() : name(""), username(""), password(""), email(""), userType("")
+    {
+    }
+
     // setters
 
     void setName(string name)
@@ -178,7 +182,7 @@ public:
         bookHistory.close();
     }
 
-    void login()
+    void login(User user)
     {
         string username, password, line;
         string lineUsername, lineName, linePassword, lineEmail;
@@ -188,7 +192,7 @@ public:
         cout << "Enter password: ";
         getline(cin, password);
 
-        while (!authenticate(username, password))
+        while (!authenticate(username, password, user))
         {
             cout << "Username or password incorrect. Try again.";
             cout << "Enter username: ";
@@ -201,7 +205,7 @@ public:
         setLogin(true);
     }
 
-    bool authenticate(const string &username, const string &password)
+    bool authenticate(const string &username, const string &password, User &user)
     {
         usersFile.open("users.txt", ios::in);
         if (usersFile.is_open())

@@ -12,5 +12,21 @@ int main()
 
     // newAdmin.createUser();
 
+    char userInput;
+    User emptyUser;
+
+    while (true)
+    {
+
+        cout << "Enter action: \n1: Login \nq: quit program" << endl;
+        switch (userInput)
+        {
+        case '1':
+            break;
+        case 'q':
+            return 0;
+        }
+    }
+
     return 0;
 }
