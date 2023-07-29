@@ -1,50 +1,31 @@
 #include <iostream>
 #include "Users.h"
 
-void userMenu(const User &user)
+void printUsers()
 {
-    string usertype = user.getUserType();
-    char userInput;
-
-    if (usertype == "user")
+    usersFile.open("users.txt", ios::in);
+    if (usersFile.is_open())
     {
-        while (true)
+        string line;
+        while (getline(usersFile, line))
         {
-            cout << "\nEnter action:\n1: View library collection\n2: View my currently issued books\n3: View my book history\nq: quit program";
-            cin >> userInput;
-            switch (userInput)
-            {
-            case '1':
-                break;
-            case '2':
-                break;
-            case 'q':
-                return;
-            default:
-                cout << "\nInvalid input. Please try again.";
-                break;
-            }
+            cout << line << endl;
         }
+        usersFile.close();
     }
-    else if (usertype == "admin")
+}
+
+void printBooks()
+{
+    booksFile.open("books.txt", ios::in);
+    if (booksFile.is_open())
     {
-        while (true)
+        string line;
+        while (getline(booksFile, line))
         {
-            cout << "\nEnter action:\n1: View library collection\n2: View users\n3: View issued books\n4: Issue a book\n5: Return a book\n6: Create new user\n7: Create new book\nq: quit program";
-            cin >> userInput;
-            switch (userInput)
-            {
-            case '1':
-                break;
-            case '2':
-                break;
-            case 'q':
-                return;
-            default:
-                cout << "\nInvalid input. Please try again.";
-                break;
-            }
+            cout << line << endl;
         }
+        booksFile.close();
     }
 }
 
@@ -93,6 +74,7 @@ Result authenticate(const string &username, const string &password)
                 result.user.setName(tokens[1]);
                 result.user.setPassword(tokens[2]);
                 result.user.setEmail(tokens[3]);
+                result.user.setUserType(tokens[4]);
                 result.error = false;
 
                 return result;
@@ -129,6 +111,67 @@ User login()
     }
 }
 
+void userMenu(const User &user)
+{
+    string usertype = user.getUserType();
+    char userInput;
+
+    if (usertype == "user")
+    {
+        while (true)
+        {
+            cout << "\nEnter action:\n1: View library collection\n2: View my currently issued books\n3: View my book history\nq: quit program";
+            cin >> userInput;
+            switch (userInput)
+            {
+            case '1':
+                break;
+            case '2':
+                break;
+            case 'q':
+                return;
+            default:
+                cout << "\nInvalid input. Please try again.";
+                break;
+            }
+        }
+    }
+    else if (usertype == "admin")
+    {
+        while (true)
+        {
+            cout << "\nEnter action:\n1: View library collection\n2: View users\n3: View issued books\n4: Issue a book\n5: Return a book\n6: Create new user\n7: Create new book\nq: log out\n";
+            cin >> userInput;
+            switch (userInput)
+            {
+            case '1':
+                printBooks();
+                break;
+            case '2':
+                printUsers();
+                break;
+            case '3':
+                break;
+            case '4':
+                break;
+            case '5':
+                break;
+            case '6':
+                createUser();
+                break;
+            case '7':
+                createBook();
+                break;
+            case 'q':
+                return;
+            default:
+                cout << "\nInvalid input. Please try again.";
+                break;
+            }
+        }
+    }
+}
+
 int main()
 {
 
@@ -138,13 +181,13 @@ int main()
     while (true)
     {
 
-        cout << "\nEnter action:\n1: Login\nq: quit program";
+        cout << "\nEnter action:\n1: Login\nq: quit program\n";
         cin >> userInput;
         switch (userInput)
         {
         case '1':
             loggedInUser = login();
-            cout << "user information: " << loggedInUser.getUsername() << "," << loggedInUser.getName() << "," << loggedInUser.getPassword() << "," << loggedInUser.getEmail();
+            userMenu(loggedInUser);
             break;
         case 'q':
             return 0;
