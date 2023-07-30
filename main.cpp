@@ -29,6 +29,10 @@ void printBooks()
     }
 }
 
+void issueBook()
+{
+}
+
 struct Result
 {
     User user;
