@@ -100,11 +100,10 @@ public:
 
 class regularUser : public User
 {
-private:
+public:
     fstream issuedBooks;
     fstream bookHistory;
 
-public:
     regularUser(string name, string username, string password, string email) : User(name, username, password, email, "user") // Call the base class constructor using member initializer list. Adds "user", so that when when admins create a new "user" object, they're a regularUser object.
     {
         string issuedBooksFilename = username + "_issuedBooks.txt";
@@ -167,6 +166,7 @@ static void createUser()
     string tempName, tempUsername, tempPassword, tempEmail, tempUserType;
 
     cout << "New user menu.\nName: ";
+    cin.ignore();
     getline(cin, tempName);
     cout << "Username: ";
     getline(cin, tempUsername);
@@ -244,3 +244,87 @@ static void createBook()
     sleep(1);
     cout << "\nNew book has been sucessfully created!" << endl;
 }
+
+void issueBook()
+{
+    string username;
+    cout << "\nEnter the borrower's username: ";
+    cin.ignore();
+    getline(cin, username);
+
+    string filename = username + "_bookHistory.txt";
+    fstream bookHistory;
+
+    bookHistory.open(filename, ios::app);
+    if (bookHistory.is_open())
+    {
+        string title, issueDate, returnDate;
+        cout << "Enter book title: ";
+        getline(cin, title);
+
+        cout << "Enter issue date: ";
+        getline(cin, issueDate);
+
+        cout << "Enter return date: ";
+        getline(cin, returnDate);
+
+        bookHistory << "Title: " << title << " Issue date: " << issueDate << " Return date: " << returnDate << endl;
+        bookHistory.close();
+    }
+    else
+    {
+        cerr << "Error opening file: " << filename << endl;
+    }
+}
+
+// void addBookToHistory(const Book &book)
+// {
+//     bookHistory.open(filename, ios::app);
+//     if (bookHistory.is_open())
+//     {
+//         bookHistory << "Title: " << book.getTitle() << "Issue date: " << endl;
+//         bookHistory.close();
+//     }
+//     else
+//     {
+//         cerr << "Error opening file: " << filename << endl;
+//     }
+// }
+
+// void removeBookFromHistory(const Book &book)
+// {
+//     bookHistory.open(filename, ios::in); // open file in read mode.
+
+//     if (!bookHistory.is_open())
+//     {
+//         cerr << "Error opening file: " << filename << endl;
+//         return;
+//     }
+
+//     string line;
+//     vector<string> updatedHistory;
+
+//     while (getline(bookHistory, line))
+//     {
+//         if (line != book.getTitle())
+//         {
+//             updatedHistory.push_back(line);
+//         }
+//     }
+
+//     bookHistory.close();
+
+//     bookHistory.open(filename, ios::out); // open file in write mode.
+//     if (!bookHistory.is_open())
+//     {
+//         cerr << "Error opening file for writing: " << filename << endl;
+//         return;
+//     }
+
+//     for (const auto &title : updatedHistory)
+//     {
+//         bookHistory << title << "\n";
+//     }
+
+//     bookHistory.close();
+// }

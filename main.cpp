@@ -29,10 +29,6 @@ void printBooks()
     }
 }
 
-void issueBook()
-{
-}
-
 struct Result
 {
     User user;
@@ -157,6 +153,7 @@ void userMenu(const User &user)
             case '3':
                 break;
             case '4':
+                issueBook();
                 break;
             case '5':
                 break;

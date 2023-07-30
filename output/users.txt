@@ -1,2 +1,3 @@
 admin,john doe,1234,johndoe@mail.com,admin
 testuser,TestUser,1234,test@mail.com,user
+athena,Athena,123,thena@mail.com,user
