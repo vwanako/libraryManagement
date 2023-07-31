@@ -271,13 +271,17 @@ void userMenu(const User &user)
     {
         while (true)
         {
+            clearTerminal();
+
             cout << "\nEnter action:\n1: View library collection\n2: View my currently issued books\n3: View my book history\nq: quit program";
             cin >> userInput;
             switch (userInput)
             {
             case '1':
+                printBooks();
                 break;
             case '2':
+                printBookHistory(user.getUsername());
                 break;
             case 'q':
                 return;
