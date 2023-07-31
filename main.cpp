@@ -86,6 +86,113 @@ Result authenticate(const string &username, const string &password)
     return result;
 }
 
+void issueBook()
+{
+    // receives input of who is getting the book from their username.
+    string username;
+    cout << "\nEnter the borrower's username: ";
+    cin.ignore();
+    getline(cin, username);
+
+    // the user's book history is formatted as username_bookHistory.txt, here, we set the file
+    string filename = username + "_bookHistory.txt";
+    fstream bookHistory, booksFile;
+
+    string title;
+    cout << "Enter book title: ";
+    getline(cin, title);
+
+    bookHistory.open(filename, ios::app);
+    if (bookHistory.is_open())
+    {
+        string issueDate, returnDate;
+
+        cout << "Enter issue date: ";
+        getline(cin, issueDate);
+
+        cout << "Enter return date: ";
+        getline(cin, returnDate);
+
+        bookHistory << "Title: " << title << " Issue date: " << issueDate << " Return date: " << returnDate << endl;
+        bookHistory.close();
+    }
+    else
+    {
+        cerr << "Error opening file: " << filename << endl;
+    }
+
+    vector<string> updatedLines;
+
+    booksFile.open("books.txt", ios::in | ios::out | ios::ate);
+
+    if (booksFile.is_open())
+    {
+        booksFile.seekg(0);
+
+        string line;
+        while (getline(booksFile, line))
+        {
+            vector<string> tokens = parse(line);
+            if (!tokens.empty() && tokens[0] == title)
+            {
+                tokens[4] = "false";
+                string updatedLine = tokens[0] + "," + tokens[1] + "," + tokens[2] + "," + tokens[3] + "," + tokens[4];
+                updatedLines.push_back(updatedLine);
+            }
+            else
+            {
+                updatedLines.push_back(line);
+            }
+        }
+
+        booksFile.close();
+    }
+    else
+    {
+        cout << "Error opening books file.";
+    }
+
+    booksFile.open("books.txt", ios::out | ios::trunc);
+    for (const string &updatedLine : updatedLines)
+    {
+        booksFile << updatedLine << endl;
+    }
+
+    booksFile.close();
+}
+
+void returnBook()
+{
+    string username;
+    cout << "\nEnter the borrower's username: ";
+    cin.ignore();
+    getline(cin, username);
+
+    cout << username << "'s book history: ";
+    printBookHistory(username);
+
+    string filename = username + "_bookHistory.txt";
+    fstream bookHistory;
+
+    bookHistory.open(filename, ios::app);
+    if (bookHistory.is_open())
+    {
+        string title, returnDate;
+        cout << "\nEnter book title: ";
+        getline(cin, title);
+
+        cout << "\nEnter return date: ";
+        getline(cin, returnDate);
+
+        bookHistory << "Title: " << title << " Return date: " << returnDate << endl;
+        bookHistory.close();
+    }
+    else
+    {
+        cerr << "\nError opening file: " << filename << endl;
+    }
+}
+
 User login()
 {
     string username, password, line;
