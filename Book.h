@@ -26,7 +26,7 @@ public:
         booksFile.open("books.txt", ios::app);
         if (booksFile.is_open())
         {
-            booksFile << title << "," << author << "," << genre << "," << price << endl;
+            booksFile << title << "," << author << "," << genre << "," << price << "," << isAvailable() << endl;
         }
     }
 

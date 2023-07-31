@@ -15,6 +15,7 @@ void printUsers()
     }
 }
 
+// prints the library collection of books, all of them.
 void printBooks()
 {
     booksFile.open("books.txt", ios::in);

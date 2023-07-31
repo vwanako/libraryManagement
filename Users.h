@@ -159,6 +159,8 @@ public:
     // methods
 };
 
+// end of class definitions
+
 static void createUser()
 {
     // we will create and store temporary varibles for each attribute our constructor asks for.
@@ -216,6 +218,23 @@ static void createUser()
     cout << "\nNew user has been sucessfully created!" << endl;
 }
 
+static void printBookHistory(const string &user)
+{
+    string filename = user + "_bookHistory.txt";
+    fstream bookHistory;
+
+    bookHistory.open(filename, ios::in);
+    if (bookHistory.is_open())
+    {
+        string line;
+        while (getline(bookHistory, line))
+        {
+            cout << line << endl;
+        }
+        bookHistory.close();
+    }
+}
+
 static void createBook()
 {
     string tempTitle, tempAuthor, tempGenre;
@@ -245,8 +264,10 @@ static void createBook()
     cout << "\nNew book has been sucessfully created!" << endl;
 }
 
+// allows admins to issue books to users.
 void issueBook()
 {
+    // receives input of who is getting the book from their username.
     string username;
     cout << "\nEnter the borrower's username: ";
     cin.ignore();
@@ -277,19 +298,37 @@ void issueBook()
     }
 }
 
-// void addBookToHistory(const Book &book)
-// {
-//     bookHistory.open(filename, ios::app);
-//     if (bookHistory.is_open())
-//     {
-//         bookHistory << "Title: " << book.getTitle() << "Issue date: " << endl;
-//         bookHistory.close();
-//     }
-//     else
-//     {
-//         cerr << "Error opening file: " << filename << endl;
-//     }
-// }
+void returnBook()
+{
+    string username;
+    cout << "\nEnter the borrower's username: ";
+    cin.ignore();
+    getline(cin, username);
+
+    cout << username << "'s book history: ";
+    printBookHistory(username);
+
+    string filename = username + "_bookHistory.txt";
+    fstream bookHistory;
+
+    bookHistory.open(filename, ios::app);
+    if (bookHistory.is_open())
+    {
+        string title, returnDate;
+        cout << "\nEnter book title: ";
+        getline(cin, title);
+
+        cout << "\nEnter return date: ";
+        getline(cin, returnDate);
+
+        bookHistory << "Title: " << title << " Return date: " << returnDate << endl;
+        bookHistory.close();
+    }
+    else
+    {
+        cerr << "\nError opening file: " << filename << endl;
+    }
+}
 
 // void removeBookFromHistory(const Book &book)
 // {
