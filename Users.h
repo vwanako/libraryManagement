@@ -216,6 +216,8 @@ static void createUser()
 
     sleep(1);
     cout << "\nNew user has been sucessfully created!" << endl;
+
+    checkGoBack();
 }
 
 static void printBookHistory(const string &user)
@@ -262,6 +264,8 @@ static void createBook()
 
     sleep(1);
     cout << "\nNew book has been sucessfully created!" << endl;
+
+    checkGoBack();
 }
 
 // allows admins to issue books to users.

@@ -1,6 +1,33 @@
 #include <iostream>
 #include "Users.h"
 
+void clearTerminal()
+{
+#ifdef _WIN32
+    system("cls");
+#else
+    system("clear");
+#endif
+}
+
+// this function is called within the action functions to ask if the user wants to leave before finishing them, this way the result of the function won't instantly disappear when the loop repeats and the terminal is cleared.
+void checkGoBack()
+{
+    char userInput;
+    while (true)
+    {
+        cout << "\nPress q to go back to menu...";
+        cin >> userInput;
+        switch (userInput)
+        {
+        case 'q':
+            return;
+        default:
+            cout << "Invalid input";
+        }
+    }
+}
+
 void printUsers()
 {
     usersFile.open("users.txt", ios::in);
@@ -13,6 +40,8 @@ void printUsers()
         }
         usersFile.close();
     }
+
+    checkGoBack();
 }
 
 // prints the library collection of books, all of them.
@@ -28,6 +57,8 @@ void printBooks()
         }
         booksFile.close();
     }
+
+    checkGoBack();
 }
 
 struct Result
@@ -98,21 +129,25 @@ void issueBook()
     string filename = username + "_bookHistory.txt";
     fstream bookHistory, booksFile;
 
+    // since book title will be used to manipulate two separate files, we will declare and receive it outside the conditions, so we don't need to ask for input twice.
     string title;
     cout << "Enter book title: ";
     getline(cin, title);
 
+    // opens the user's book history file
     bookHistory.open(filename, ios::app);
     if (bookHistory.is_open())
     {
         string issueDate, returnDate;
 
+        // receives issue date and return date
         cout << "Enter issue date: ";
         getline(cin, issueDate);
 
         cout << "Enter return date: ";
         getline(cin, returnDate);
 
+        // inserts the formated information into the file and closes it
         bookHistory << "Title: " << title << " Issue date: " << issueDate << " Return date: " << returnDate << endl;
         bookHistory.close();
     }
@@ -121,10 +156,13 @@ void issueBook()
         cerr << "Error opening file: " << filename << endl;
     }
 
+    // creates a vector of strings, we will use it to store all the information in the file, along with the updated line and
     vector<string> updatedLines;
 
-    booksFile.open("books.txt", ios::in | ios::out | ios::ate);
+    // opens the books file (where the information of the library collection is stored) in read mode
+    booksFile.open("books.txt", ios::in);
 
+    // if
     if (booksFile.is_open())
     {
         booksFile.seekg(0);
@@ -153,12 +191,15 @@ void issueBook()
     }
 
     booksFile.open("books.txt", ios::out | ios::trunc);
+
     for (const string &updatedLine : updatedLines)
     {
         booksFile << updatedLine << endl;
     }
 
     booksFile.close();
+
+    checkGoBack();
 }
 
 void returnBook()
@@ -191,6 +232,8 @@ void returnBook()
     {
         cerr << "\nError opening file: " << filename << endl;
     }
+
+    checkGoBack();
 }
 
 User login()
@@ -248,8 +291,11 @@ void userMenu(const User &user)
     {
         while (true)
         {
+            clearTerminal();
+
             cout << "\nEnter action:\n1: View library collection\n2: View users\n3: View issued books\n4: Issue a book\n5: Return a book\n6: Create new user\n7: Create new book\nq: log out\n";
             cin >> userInput;
+
             switch (userInput)
             {
             case '1':
@@ -289,7 +335,7 @@ int main()
 
     while (true)
     {
-
+        clearTerminal();
         cout << "\nEnter action:\n1: Login\nq: quit program\n";
         cin >> userInput;
         switch (userInput)
