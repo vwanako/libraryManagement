@@ -248,34 +248,43 @@ void issueBook()
     getline(cin, username);
 
     // the user's book history is formatted as username_bookHistory.txt, here, we set the file
-    string filename = username + "_bookHistory.txt";
-    fstream bookHistory, booksFile;
+    string historyFilename = username + "_bookHistory.txt";
+    string issuedFilename = username + "_issuedBooks.txt";
+    fstream bookHistory, booksFile, issuedBooks;
 
-    // since book title will be used to manipulate two separate files, we will declare and receive it outside the conditions, so we don't need to ask for input twice.
-    string title;
-    cout << "Enter book title: ";
+    // since info will be used to manipulate three separate files, we will declare and receive it outside the conditions, so we don't need to ask for input twice.
+    string title, issueDate, returnDate;
+    cout << "\nEnter book title: ";
     getline(cin, title);
+    cout << "\nEnter issue date: ";
+    getline(cin, issueDate);
+    cout << "\nEnter return date: ";
+    getline(cin, returnDate);
 
     // opens the user's book history file
-    bookHistory.open(filename, ios::app);
+    bookHistory.open(historyFilename, ios::app);
     if (bookHistory.is_open())
     {
-        string issueDate, returnDate;
-
-        // receives issue date and return date
-        cout << "Enter issue date: ";
-        getline(cin, issueDate);
-
-        cout << "Enter return date: ";
-        getline(cin, returnDate);
-
         // inserts the formated information into the file and closes it
-        bookHistory << "Title: " << title << " Issue date: " << issueDate << " Return date: " << returnDate << endl;
+        bookHistory << title << "," << issueDate << "," << returnDate << endl;
         bookHistory.close();
     }
     else
     {
-        cerr << "Error opening file: " << filename << endl;
+        cerr << "Error opening file: " << historyFilename << endl;
+    }
+
+    // does the same to the issuedBooks (the books the person issued and didn't return yet) as the bookHistory.
+    issuedBooks.open(issuedFilename, ios::app);
+    if (issuedBooks.is_open())
+    {
+        // inserts the formated information into the file and closes it
+        bookHistory << title << "," << issueDate << "," << returnDate << endl;
+        bookHistory.close();
+    }
+    else
+    {
+        cerr << "Error opening file: " << issuedFilename << endl;
     }
 
     // creates a vector of strings, we will use it to store all the information in the file, along with the updated line and
@@ -297,8 +306,8 @@ void issueBook()
             // if tokens isn't empty and the element [0] is the title of the issued book
             if (!tokens.empty() && tokens[0] == title)
             {
-                // changes the "is available" info to false
-                tokens[4] = "false";
+                // changes the "is available" info to unavailable.
+                tokens[4] = "unavailable";
                 // creates a new line with the updated availability status without altering the other information
                 string updatedLine = tokens[0] + "," + tokens[1] + "," + tokens[2] + "," + tokens[3] + "," + tokens[4];
                 // stores the new line in the updated lines vector
@@ -341,29 +350,94 @@ void returnBook()
     cin.ignore();
     getline(cin, username);
 
+    // prints the user's book history to make it easier to return books.
     cout << username << "'s book history: ";
     printBookHistory(username);
 
-    string filename = username + "_bookHistory.txt";
-    fstream bookHistory;
+    string issuedFilename = username + "_issuedBooks.txt";
+    fstream issuedBooks;
 
-    bookHistory.open(filename, ios::app);
-    if (bookHistory.is_open())
+    string title;
+    cout << "\nEnter book title: ";
+    getline(cin, title);
+
+    // removes the title from the currently issued books list. functions similar to the book history manipulation.
+    vector<string> updatedIssueLines;
+    issuedBooks.open(issuedFilename, ios::app);
+    if (issuedBooks.is_open())
     {
-        string title, returnDate;
-        cout << "\nEnter book title: ";
-        getline(cin, title);
+        issuedBooks.seekg(0);
 
-        cout << "\nEnter return date: ";
-        getline(cin, returnDate);
+        string line;
+        while (getline(booksFile, line))
+        {
+            vector<string> tokens = parse(line);
 
-        bookHistory << "Title: " << title << " Return date: " << returnDate << endl;
-        bookHistory.close();
+            if (!tokens.empty() && tokens[0] != title)
+            {
+                updatedIssueLines.push_back(line);
+            }
+        }
+        issuedBooks.close();
     }
     else
     {
-        cerr << "\nError opening file: " << filename << endl;
+        cerr << "\nError opening file: " << issuedFilename << endl;
     }
+
+    issuedBooks.open(issuedFilename, ios::out | ios::trunc);
+
+    for (const string &updatedIssueLine : updatedIssueLines)
+    {
+        issuedBooks << updatedIssueLine << endl;
+    }
+
+    issuedBooks.close();
+
+    vector<string> updatedLines;
+
+    // explanation is the same as the issue book function, except that it changes the token from "false" to "true"
+    booksFile.open("books.txt", ios::in);
+    if (booksFile.is_open())
+    {
+        booksFile.seekg(0);
+
+        string line;
+        while (getline(booksFile, line))
+        {
+            vector<string> tokens = parse(line);
+
+            if (!tokens.empty() && tokens[0] == title)
+            {
+                // changes the "is available" info to available.
+                tokens[4] = "available";
+                string updatedLine = tokens[0] + "," + tokens[1] + "," + tokens[2] + "," + tokens[3] + "," + tokens[4];
+                updatedLines.push_back(updatedLine);
+            }
+            else
+            {
+                updatedLines.push_back(line);
+            }
+        }
+        // closes the file
+        booksFile.close();
+    }
+    // handling errors when opening the file fails
+    else
+    {
+        cout << "Error opening books file.";
+    }
+
+    // opens the file again in write mode
+    booksFile.open("books.txt", ios::out | ios::trunc);
+    // overwrites the file using each element of the updated lines vector as a line in the file.
+    for (const string &updatedLine : updatedLines)
+    {
+        booksFile << updatedLine << endl;
+    }
+
+    // close the file
+    booksFile.close();
 
     // waits for user input before finalizing function (explanaition in function declaration)
     checkGoBack();
