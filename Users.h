@@ -1,10 +1,6 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-#include <vector>
-#include <algorithm>
-#include <cctype>
-#include <unistd.h>
 #include "Book.h"
 using namespace std;
 
@@ -14,7 +10,6 @@ class User
 {
 protected:
     string name, username, password, email, filename, userType;
-    bool isLoggedin;
 
 public:
     // constructors
@@ -25,7 +20,6 @@ public:
         setUsername(username);
         setPassword(password);
         setEmail(email);
-        // setLogin(false);
         filename = username + "_bookHistory.txt";
 
         setUserType(userType);
@@ -94,8 +88,6 @@ public:
     {
         return userType;
     }
-
-    // methods
 };
 
 class regularUser : public User
@@ -128,8 +120,6 @@ public:
 
 class admin : public User
 {
-private:
-    // we will add any private attributes for the admin class here.
 public:
     // constructor
     admin(string name, string username, string password, string email) : User(name, username, password, email, "admin") // here, we redirect users created with type "admin"

@@ -1,4 +1,10 @@
 #include <iostream>
+#include <fstream>
+#include <string>
+#include <vector>
+#include <algorithm>
+#include <cctype>
+#include <unistd.h>
 #include "Users.h"
 
 void clearTerminal()
@@ -40,6 +46,10 @@ void printUsers()
         }
         usersFile.close();
     }
+    else
+    {
+        cout << "\nError opening users file.";
+    }
 
     // waits for user input before finalizing function (explanaition in function declaration)
     checkGoBack();
@@ -57,6 +67,10 @@ void printBooks()
             cout << line << endl;
         }
         booksFile.close();
+    }
+    else
+    {
+        cout << "\nError opening book collection file.";
     }
 
     // waits for user input before finalizing function (explanaition in function declaration)
@@ -87,9 +101,27 @@ void printBookHistory(const string &user)
     {
         cout << "\nError opening book history file.";
     }
+}
 
-    // waits for user input before finalizing function (explanaition in function declaration)
-    checkGoBack();
+void printIssuedBooks(const string &user)
+{
+    string filename = user + "_issuedBooks.txt";
+    fstream issuedBooks;
+
+    issuedBooks.open(filename, ios::in);
+    if (issuedBooks.is_open())
+    {
+        string line;
+        while (getline(issuedBooks, line))
+        {
+            cout << line << endl;
+        }
+        issuedBooks.close();
+    }
+    else
+    {
+        cout << "\nError opening issued books file.";
+    }
 }
 
 void createBook()
@@ -279,8 +311,8 @@ void issueBook()
     if (issuedBooks.is_open())
     {
         // inserts the formated information into the file and closes it
-        bookHistory << title << "," << issueDate << "," << returnDate << endl;
-        bookHistory.close();
+        issuedBooks << title << "," << issueDate << "," << returnDate << endl;
+        issuedBooks.close();
     }
     else
     {
@@ -351,7 +383,7 @@ void returnBook()
     getline(cin, username);
 
     // prints the user's book history to make it easier to return books.
-    cout << username << "'s book history: ";
+    cout << username << "'s book history: \n";
     printBookHistory(username);
 
     string issuedFilename = username + "_issuedBooks.txt";
@@ -487,8 +519,9 @@ void userMenu(const User &user)
             case '1':
                 printBooks();
                 break;
-            case '2':
+            case '3':
                 printBookHistory(user.getUsername());
+                checkGoBack();
                 break;
             case 'q':
                 return;
@@ -504,7 +537,7 @@ void userMenu(const User &user)
         {
             clearTerminal();
 
-            cout << "\nEnter action:\n1: View library collection\n2: View users\n3: View issued books\n4: Issue a book\n5: Return a book\n6: Create new user\n7: Create new book\nq: log out\n";
+            cout << "\nEnter action:\n1: View library collection\n2: View users\n3: Issue a book\n4: Return a book\n5: Create new user\n6: Create new book\nq: log out\n";
             cin >> userInput;
 
             switch (userInput)
@@ -516,16 +549,15 @@ void userMenu(const User &user)
                 printUsers();
                 break;
             case '3':
-                break;
-            case '4':
                 issueBook();
                 break;
-            case '5':
+            case '4':
+                returnBook();
                 break;
-            case '6':
+            case '5':
                 createUser();
                 break;
-            case '7':
+            case '6':
                 createBook();
                 break;
             case 'q':
