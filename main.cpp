@@ -41,6 +41,7 @@ void printUsers()
         usersFile.close();
     }
 
+    // waits for user input before finalizing function (explanaition in function declaration)
     checkGoBack();
 }
 
@@ -58,6 +59,7 @@ void printBooks()
         booksFile.close();
     }
 
+    // waits for user input before finalizing function (explanaition in function declaration)
     checkGoBack();
 }
 
@@ -161,44 +163,54 @@ void issueBook()
 
     // opens the books file (where the information of the library collection is stored) in read mode
     booksFile.open("books.txt", ios::in);
-
-    // if
     if (booksFile.is_open())
     {
+        // sets the pointer to the beginning of the file
         booksFile.seekg(0);
 
+        // creates a line variable, we will use it to read each line of the file until we find the book being issued
         string line;
         while (getline(booksFile, line))
         {
+            // calls the parse function to split each information into elements of vector tokens
             vector<string> tokens = parse(line);
+            // if tokens isn't empty and the element [0] is the title of the issued book
             if (!tokens.empty() && tokens[0] == title)
             {
+                // changes the "is available" info to false
                 tokens[4] = "false";
+                // creates a new line with the updated availability status without altering the other information
                 string updatedLine = tokens[0] + "," + tokens[1] + "," + tokens[2] + "," + tokens[3] + "," + tokens[4];
+                // stores the new line in the updated lines vector
                 updatedLines.push_back(updatedLine);
             }
+            // if the line isn't the book we're looking for, it will be stored in the updated lines vector without changes
             else
             {
                 updatedLines.push_back(line);
             }
         }
-
+        // closes the file
         booksFile.close();
     }
+    // handling errors when opening the file fails
     else
     {
         cout << "Error opening books file.";
     }
 
+    // opens the file again in write mode
     booksFile.open("books.txt", ios::out | ios::trunc);
-
+    // overwrites the file using each element of the updated lines vector as a line in the file.
     for (const string &updatedLine : updatedLines)
     {
         booksFile << updatedLine << endl;
     }
 
+    // close the file
     booksFile.close();
 
+    // waits for user input before finalizing function (explanaition in function declaration)
     checkGoBack();
 }
 
@@ -233,6 +245,7 @@ void returnBook()
         cerr << "\nError opening file: " << filename << endl;
     }
 
+    // waits for user input before finalizing function (explanaition in function declaration)
     checkGoBack();
 }
 

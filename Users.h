@@ -155,8 +155,6 @@ public:
     admin(string name, string username, string password, string email) : User(name, username, password, email, "admin") // here, we redirect users created with type "admin"
     {
     }
-
-    // methods
 };
 
 // end of class definitions
@@ -201,7 +199,7 @@ static void createUser()
     {
         regularUser newUser(tempName, tempUsername, tempPassword, tempEmail);
     }
-    else // since the user type has already been validated, if it's not "user", it has to be "admin", so we don't need an else if condition, only and else will be fine.
+    else // since the user type has already been validated, if it's not "user", it has to be "admin", so we don't need an "else if" condition, a simple "else" will be fine.
     {
         admin newAdmin(tempName, tempUsername, tempPassword, tempEmail);
     }
@@ -217,24 +215,37 @@ static void createUser()
     sleep(1);
     cout << "\nNew user has been sucessfully created!" << endl;
 
+    // waits for user input before finalizing function (explanaition in function declaration)
     checkGoBack();
 }
 
 static void printBookHistory(const string &user)
 {
+    // concatenates the parameter with the file name
     string filename = user + "_bookHistory.txt";
     fstream bookHistory;
 
+    // opens file in read mode
     bookHistory.open(filename, ios::in);
     if (bookHistory.is_open())
     {
+        // read the history line by line, printing each one
         string line;
         while (getline(bookHistory, line))
         {
             cout << line << endl;
         }
+        // closes file
         bookHistory.close();
     }
+    // handles errors when opening file
+    else
+    {
+        cout << "\nError opening book history file.";
+    }
+
+    // waits for user input before finalizing function (explanaition in function declaration)
+    checkGoBack();
 }
 
 static void createBook()
@@ -265,45 +276,6 @@ static void createBook()
     sleep(1);
     cout << "\nNew book has been sucessfully created!" << endl;
 
+    // waits for user input before finalizing function (explanaition in function declaration)
     checkGoBack();
 }
-
-// allows admins to issue books to users.
-
-// void removeBookFromHistory(const Book &book)
-// {
-//     bookHistory.open(filename, ios::in); // open file in read mode.
-
-//     if (!bookHistory.is_open())
-//     {
-//         cerr << "Error opening file: " << filename << endl;
-//         return;
-//     }
-
-//     string line;
-//     vector<string> updatedHistory;
-
-//     while (getline(bookHistory, line))
-//     {
-//         if (line != book.getTitle())
-//         {
-//             updatedHistory.push_back(line);
-//         }
-//     }
-
-//     bookHistory.close();
-
-//     bookHistory.open(filename, ios::out); // open file in write mode.
-//     if (!bookHistory.is_open())
-//     {
-//         cerr << "Error opening file for writing: " << filename << endl;
-//         return;
-//     }
-
-//     for (const auto &title : updatedHistory)
-//     {
-//         bookHistory << title << "\n";
-//     }
-
-//     bookHistory.close();
-// }
