@@ -63,6 +63,126 @@ void printBooks()
     checkGoBack();
 }
 
+void printBookHistory(const string &user)
+{
+    // concatenates the parameter with the file name
+    string filename = user + "_bookHistory.txt";
+    fstream bookHistory;
+
+    // opens file in read mode
+    bookHistory.open(filename, ios::in);
+    if (bookHistory.is_open())
+    {
+        // read the history line by line, printing each one
+        string line;
+        while (getline(bookHistory, line))
+        {
+            cout << line << endl;
+        }
+        // closes file
+        bookHistory.close();
+    }
+    // handles errors when opening file
+    else
+    {
+        cout << "\nError opening book history file.";
+    }
+
+    // waits for user input before finalizing function (explanaition in function declaration)
+    checkGoBack();
+}
+
+void createBook()
+{
+    string tempTitle, tempAuthor, tempGenre;
+    float tempPrice;
+
+    cout << "New book menu.\nTitle: ";
+    cin.ignore();
+    getline(cin, tempTitle);
+    cout << "Author: ";
+    getline(cin, tempAuthor);
+    cout << "Genre: ";
+    getline(cin, tempGenre);
+    cout << "Price: ";
+    cin >> tempPrice;
+
+    Book newBook(tempTitle, tempAuthor, tempGenre, tempPrice);
+
+    cout << "\nNew book being created";
+    for (int i = 0; i < 3; i++)
+    {
+        sleep(1);
+        cout << ".";
+        // this makes "New user book created..." appear on the console with a one second delay for each "."
+    }
+
+    sleep(1);
+    cout << "\nNew book has been sucessfully created!" << endl;
+
+    // waits for user input before finalizing function (explanaition in function declaration)
+    checkGoBack();
+}
+
+static void createUser()
+{
+    // we will create and store temporary varibles for each attribute our constructor asks for.
+
+    string tempName, tempUsername, tempPassword, tempEmail, tempUserType;
+
+    cout << "New user menu.\nName: ";
+    cin.ignore();
+    getline(cin, tempName);
+    cout << "Username: ";
+    getline(cin, tempUsername);
+    cout << "Password: ";
+    getline(cin, tempPassword);
+    cout << "Email: ";
+    getline(cin, tempEmail);
+
+    // the user type variable can only be two things: 'admin' or 'user'. we will use this loop to validate the input, making sure to only accept those values.
+    while (true)
+    {
+        cout << "\nUser type [user/admin]: " << endl;
+        cin >> tempUserType;
+
+        // convert the input to lowercase to make the validation case-insensitive
+        transform(tempUserType.begin(), tempUserType.end(), tempUserType.begin(), ::tolower);
+
+        if (tempUserType == "user" || tempUserType == "admin")
+        {
+            break;
+            // leaves the loop if appropriate input is received.
+        }
+        else
+        {
+            cout << "\nInvalid user type. Please enter 'user' or 'admin'." << endl;
+        }
+    }
+
+    if (tempUserType == "user")
+    {
+        regularUser newUser(tempName, tempUsername, tempPassword, tempEmail);
+    }
+    else // since the user type has already been validated, if it's not "user", it has to be "admin", so we don't need an "else if" condition, a simple "else" will be fine.
+    {
+        admin newAdmin(tempName, tempUsername, tempPassword, tempEmail);
+    }
+
+    cout << "\nNew user being created";
+    for (int i = 0; i < 3; i++)
+    {
+        sleep(1);
+        cout << ".";
+        // this makes "New user being created..." appear on the console with a one second delay for each "."
+    }
+
+    sleep(1);
+    cout << "\nNew user has been sucessfully created!" << endl;
+
+    // waits for user input before finalizing function (explanaition in function declaration)
+    checkGoBack();
+}
 struct Result
 {
     User user;
