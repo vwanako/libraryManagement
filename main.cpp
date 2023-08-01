@@ -22,20 +22,21 @@ void checkGoBack()
     char userInput;
     while (true)
     {
-        cout << "\nPress q to go back to menu...";
+        cout << "\nPress q to go back to menu...\n";
         cin >> userInput;
         switch (userInput)
         {
         case 'q':
             return;
         default:
-            cout << "Invalid input";
+            cout << "\nInvalid input";
         }
     }
 }
 
 void printUsers()
 {
+    cout << "USERNAME | NAME | PASSWORD | EMAIL | USER TYPE\n";
     usersFile.open("users.txt", ios::in);
     if (usersFile.is_open())
     {
@@ -58,6 +59,9 @@ void printUsers()
 // prints the library collection of books, all of them.
 void printBooks()
 {
+    // shows file formatting
+    cout << "TITLE | AUTHOR | GENRE | PRICE | AVAILABILITY STATUS\n";
+
     booksFile.open("books.txt", ios::in);
     if (booksFile.is_open())
     {
@@ -83,6 +87,9 @@ void printBookHistory(const string &user)
     string filename = user + "_bookHistory.txt";
     fstream bookHistory;
 
+    // shows file formatting
+    cout << "TITLE | ISSUE DATE | RETURN DATE\n";
+
     // opens file in read mode
     bookHistory.open(filename, ios::in);
     if (bookHistory.is_open())
@@ -107,6 +114,9 @@ void printIssuedBooks(const string &user)
 {
     string filename = user + "_issuedBooks.txt";
     fstream issuedBooks;
+
+    // shows file formatting
+    cout << "TITLE | ISSUE DATE | RETURN DATE\n";
 
     issuedBooks.open(filename, ios::in);
     if (issuedBooks.is_open())
@@ -140,6 +150,7 @@ void createBook()
     cin >> tempPrice;
 
     Book newBook(tempTitle, tempAuthor, tempGenre, tempPrice);
+    newBook.saveToFile();
 
     cout << "\nNew book being created";
     for (int i = 0; i < 3; i++)
@@ -156,7 +167,7 @@ void createBook()
     checkGoBack();
 }
 
-static void createUser()
+void createUser()
 {
     // we will create and store temporary varibles for each attribute our constructor asks for.
 
@@ -512,12 +523,16 @@ void userMenu(const User &user)
         {
             clearTerminal();
 
-            cout << "\nEnter action:\n1: View library collection\n2: View my currently issued books\n3: View my book history\nq: quit program";
+            cout << "\nEnter action:\n1: View library collection\n2: View my currently issued books\n3: View my book history\nq: log out\n";
             cin >> userInput;
             switch (userInput)
             {
             case '1':
                 printBooks();
+                break;
+            case '2':
+                printIssuedBooks(user.getUsername());
+                checkGoBack();
                 break;
             case '3':
                 printBookHistory(user.getUsername());
@@ -527,6 +542,7 @@ void userMenu(const User &user)
                 return;
             default:
                 cout << "\nInvalid input. Please try again.";
+                sleep(2);
                 break;
             }
         }
@@ -564,6 +580,7 @@ void userMenu(const User &user)
                 return;
             default:
                 cout << "\nInvalid input. Please try again.";
+                sleep(2);
                 break;
             }
         }

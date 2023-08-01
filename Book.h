@@ -8,10 +8,9 @@ fstream booksFile;
 class Book
 {
 private:
-    string title, author, genre;
+    string title, author, genre, available;
     float price;
     int bid;
-    bool available;
 
 public:
     // constructor
@@ -21,12 +20,22 @@ public:
         setTitle(title);
         setAuthor(author);
         setGenre(genre);
-        setAvailable(true);
+        setAvailable("available");
+        setPrice(price);
+    }
 
+    void saveToFile()
+    {
+        fstream booksFile;
         booksFile.open("books.txt", ios::app);
         if (booksFile.is_open())
         {
             booksFile << title << "," << author << "," << genre << "," << price << "," << isAvailable() << endl;
+            booksFile.close();
+        }
+        else
+        {
+            cout << "Error: Unable to open the file for saving the book." << endl;
         }
     }
 
@@ -44,9 +53,13 @@ public:
     {
         this->genre = genre;
     }
-    void setAvailable(bool available)
+    void setAvailable(string available)
     {
         this->available = available;
+    }
+    void setPrice(float price)
+    {
+        this->price = price;
     }
 
     // getters
@@ -66,8 +79,13 @@ public:
         return genre;
     }
 
-    bool isAvailable() const
+    string isAvailable() const
     {
         return available;
+    }
+
+    float getPrice() const
+    {
+        return price;
     }
 };
