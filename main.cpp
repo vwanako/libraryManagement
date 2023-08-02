@@ -16,6 +16,27 @@ void clearTerminal()
 #endif
 }
 
+vector<string> parse(const string &line)
+{
+    // each text between ","
+    vector<string> tokens;
+    string tempLine;
+
+    for (int i = 0; i < line.size(); i++)
+    {
+        if (line[i] == ',')
+        {
+            tokens.push_back(tempLine);
+            tempLine.clear();
+            continue;
+        }
+
+        tempLine += line[i];
+    }
+
+    tokens.push_back(tempLine);
+    return tokens;
+}
 // this function is called within the action functions to ask if the user wants to leave before finishing them, this way the result of the function won't instantly disappear when the loop repeats and the terminal is cleared.
 void checkGoBack()
 {
@@ -107,6 +128,121 @@ void printBookHistory(const string &user)
     else
     {
         cout << "\nError opening book history file.";
+    }
+}
+
+// this function will print only the title, author and genre of the books set as "available". It will be shown in the issue function.
+void printAvailableBooks()
+{
+    fstream booksFile;
+    vector<string> availableBooks;
+
+    booksFile.open("books.txt", ios::in);
+    if (booksFile.is_open())
+    {
+        string line;
+        while (getline(booksFile, line))
+        {
+            vector<string> tokens = parse(line);
+            if (tokens[4] == "available")
+            {
+                string basicInfo = "title: " + tokens[0] + " | author: " + tokens[1] + " | genre: " + tokens[2];
+                availableBooks.push_back(basicInfo);
+            }
+        }
+        booksFile.close();
+    }
+    else
+    {
+        cout << "\nError opening books file.";
+    }
+
+    for (const string &line : availableBooks)
+    {
+        cout << line << endl;
+    }
+}
+
+bool checkBookAvailability(const string &title)
+{
+    fstream booksFile;
+
+    booksFile.open("books.txt", ios::in);
+    if (booksFile.is_open())
+    {
+        string line;
+        while (getline(booksFile, line))
+        {
+            vector<string> tokens = parse(line);
+            if (tokens[0] == title && tokens[4] == "available")
+            {
+                booksFile.close();
+                return true;
+            }
+        }
+        booksFile.close();
+        return false;
+    }
+    else
+    {
+        cout << "\nError opening books file.";
+        return false;
+    }
+}
+
+bool checkUsernameAvailability(const string &username)
+{
+    fstream usersFile;
+
+    usersFile.open("users.txt", ios::in);
+    if (usersFile.is_open())
+    {
+        string line;
+        while (getline(usersFile, line))
+        {
+            vector<string> tokens = parse(line);
+            // if the program finds the username in the users file, availability is false.
+            if (tokens[0] == username)
+            {
+                usersFile.close();
+                return false;
+            }
+        }
+        usersFile.close();
+        return true; // if the program doesnt't find the username, availability is true
+    }
+    else
+    {
+        cout << "\nError opening users file.";
+        return false;
+    }
+}
+
+bool checkInIssued(const string &title, const string &user)
+{
+    fstream issuedBooks;
+    string filename = user + "_issuedBooks.txt";
+
+    issuedBooks.open(filename, ios::in);
+    if (issuedBooks.is_open())
+    {
+        string line;
+        while (getline(issuedBooks, line))
+        {
+            vector<string> tokens = parse(line);
+            if (tokens[0] == title)
+            {
+                issuedBooks.close();
+                return true;
+            }
+        }
+        issuedBooks.close();
+        return false;
+    }
+    else
+    {
+        cout << "\nError opening issued books file.";
+        return false;
     }
 }
 
@@ -232,28 +368,6 @@ struct Result
     bool error;
 };
 
-vector<string> parse(const string &line)
-{
-    // each text between ","
-    vector<string> tokens;
-    string tempLine;
-
-    for (int i = 0; i < line.size(); i++)
-    {
-        if (line[i] == ',')
-        {
-            tokens.push_back(tempLine);
-            tempLine.clear();
-            continue;
-        }
-
-        tempLine += line[i];
-    }
-
-    tokens.push_back(tempLine);
-    return tokens;
-}
-
 Result authenticate(const string &username, const string &password)
 {
     Result result;
@@ -284,6 +398,8 @@ Result authenticate(const string &username, const string &password)
 
 void issueBook()
 {
+    cout << "Available books:\n";
+    printAvailableBooks();
     // receives input of who is getting the book from their username.
     string username;
     cout << "\nEnter the borrower's username: ";
@@ -299,6 +415,19 @@ void issueBook()
     string title, issueDate, returnDate;
     cout << "\nEnter book title: ";
     getline(cin, title);
+
+    while (!checkBookAvailability(title))
+    {
+        cout << "\nThe book '" << title << "' is not currently available or doesn't exist. Please try again or press 'q' to finalize issuing process.\n";
+        getline(cin, title);
+        if (title == "q")
+        {
+            cout << "\nIssue process finalized. Redirecting to menu...";
+            sleep(2);
+            return;
+        }
+    }
+
     cout << "\nEnter issue date: ";
     getline(cin, issueDate);
     cout << "\nEnter return date: ";
@@ -403,6 +532,18 @@ void returnBook()
     string title;
     cout << "\nEnter book title: ";
     getline(cin, title);
+    while (!checkInIssued(title, username))
+    {
+        cout << "\nThe book '" << title << "' is not in " << username << "'s issued books file or doesn't exist. Please try again or press 'q' to finalize the returning process.\n";
+
+        getline(cin, title);
+        if (title == "q")
+        {
+            cout << "\nReturning process finalized. Redirecting to menu...";
+            sleep(2);
+            return;
+        }
+    }
 
     // removes the title from the currently issued books list. functions similar to the book history manipulation.
     vector<string> updatedIssueLines;
