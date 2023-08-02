@@ -218,6 +218,34 @@ bool checkUsernameAvailability(const string &username)
     }
 }
 
+bool checkTitleAvailability(const string &title)
+{
+    fstream booksFile;
+
+    booksFile.open("books.txt", ios::in);
+    if (booksFile.is_open())
+    {
+        string line;
+        while (getline(booksFile, line))
+        {
+            vector<string> tokens = parse(line);
+            // if the program finds the title in the books file, availability is false.
+            if (tokens[0] == title)
+            {
+                booksFile.close();
+                return false;
+            }
+        }
+        booksFile.close();
+        return true; // if the program doesnt find the title, availability is true
+    }
+    else
+    {
+        cout << "\nError opening books file.";
+        return false;
+    }
+}
+
 bool checkInIssued(const string &title, const string &user)
 {
     fstream issuedBooks;
@@ -278,6 +306,19 @@ void createBook()
     cout << "New book menu.\nTitle: ";
     cin.ignore();
     getline(cin, tempTitle);
+
+    while (!checkTitleAvailability(tempTitle))
+    {
+        cout << "The book '" << tempTitle << "' already exists. Please try again or press 'q' to finalize book creation process.\n";
+        getline(cin, tempTitle);
+        if (tempTitle == "q")
+        {
+            cout << "\nBook creation process finalized. Redirecting to menu...";
+            sleep(2);
+            return;
+        }
+    }
+
     cout << "Author: ";
     getline(cin, tempAuthor);
     cout << "Genre: ";
@@ -314,6 +355,19 @@ void createUser()
     getline(cin, tempName);
     cout << "Username: ";
     getline(cin, tempUsername);
+
+    while (!checkUsernameAvailability(tempUsername))
+    {
+        cout << "The username '" << tempUsername << "' already exists. Please try again or press 'q' to finalize user creation process.\n";
+        getline(cin, tempUsername);
+        if (tempUsername == "q")
+        {
+            cout << "\nUser creation process finalized. Redirecting to menu...";
+            sleep(2);
+            return;
+        }
+    }
+
     cout << "Password: ";
     getline(cin, tempPassword);
     cout << "Email: ";

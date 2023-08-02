@@ -23,8 +23,16 @@ public:
         filename = username + "_bookHistory.txt";
 
         setUserType(userType);
+    }
 
-        // append user information to the users.txt file
+    User() : name(""), username(""), password(""), email(""), userType("")
+    {
+    }
+
+    void saveToFile()
+    {
+        fstream usersFile;
+
         usersFile.open("users.txt", ios::app);
         if (usersFile.is_open())
         {
@@ -33,12 +41,8 @@ public:
         }
         else
         {
-            std::cerr << "Error creating/opening file: users.txt" << std::endl;
+            cout << "\nError: Unable to open the file for savin the user information.";
         }
-    }
-
-    User() : name(""), username(""), password(""), email(""), userType("")
-    {
     }
 
     // setters

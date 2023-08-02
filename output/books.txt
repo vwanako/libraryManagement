@@ -3,3 +3,4 @@ anna karenina,leo tolstoi,romance,90,available
 les miserables,victor hugo,romance,50,available
 dracula,bram stoker,horror,65,available
 geek love,katherine dunn,romance,30,available
+magisterium,cassandra clare & holly black,fantasy,40,available

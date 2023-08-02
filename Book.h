@@ -35,7 +35,7 @@ public:
         }
         else
         {
-            cout << "Error: Unable to open the file for saving the book." << endl;
+            cout << "\nError: Unable to open the file for saving the book.";
         }
     }
 
