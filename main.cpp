@@ -607,7 +607,7 @@ void returnBook()
 
     // removes the title from the currently issued books list. functions similar to the book history manipulation.
     vector<string> updatedIssueLines;
-    issuedBooks.open(issuedFilename, ios::app);
+    issuedBooks.open(issuedFilename, ios::in);
     if (issuedBooks.is_open())
     {
         issuedBooks.seekg(0);
