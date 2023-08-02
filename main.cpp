@@ -396,10 +396,12 @@ void createUser()
     if (tempUserType == "user")
     {
         regularUser newUser(tempName, tempUsername, tempPassword, tempEmail);
+        newUser.saveToFile();
     }
     else // since the user type has already been validated, if it's not "user", it has to be "admin", so we don't need an "else if" condition, a simple "else" will be fine.
     {
         admin newAdmin(tempName, tempUsername, tempPassword, tempEmail);
+        newAdmin.saveToFile();
     }
 
     cout << "\nNew user being created";
@@ -445,6 +447,10 @@ Result authenticate(const string &username, const string &password)
                 return result;
             }
         }
+    }
+    else
+    {
+        cout << "Error opening users file";
     }
     result.error = true;
     return result;
@@ -607,11 +613,11 @@ void returnBook()
         issuedBooks.seekg(0);
 
         string line;
-        while (getline(booksFile, line))
+        while (getline(issuedBooks, line))
         {
             vector<string> tokens = parse(line);
 
-            if (!tokens.empty() && tokens[0] != title)
+            if (tokens[0] != title)
             {
                 updatedIssueLines.push_back(line);
             }
@@ -684,7 +690,6 @@ void returnBook()
 User login()
 {
     string username, password, line;
-    string lineUsername, lineName, linePassword, lineEmail;
 
     cout << "\nEnter username: ";
     cin >> username;
