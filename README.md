@@ -9,8 +9,6 @@ These are a few of the features planned for this project!
   - Adding users, managing their borrowing history.
   - Allowing users to see their own borrowing history and the return date for each book.
   - Keeping track of the books and showing whether they are available or not, adding and removing books from inventory.
-  - Allowing users to search for books based on title, author and genre.
-  - Generating a fine in case the book is damaged or lost, based on it's price.
   - And others!
 
 
