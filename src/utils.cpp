@@ -1,6 +1,8 @@
 #include <vector>
+#include <fstream>
 #include <string>
 #include <iostream>
+#include <unistd.h>
 #include <utils.h>
 
 extern std::fstream users_file;
@@ -112,4 +114,358 @@ void print_books()
         std::cout << "\nError opening book collection file.";
     }
     check_go_back();
+}
+
+/*! \fn print_book_history(const std::string &user)
+    @brief Prints the book history for a specific user.
+    @param user the username whose history we'll print out
+*/
+void print_book_history(const std::string &user)
+{
+    std::string filename = "res/" + user + "_book_history.txt";
+    std::fstream book_history;
+
+    std::cout << "TITLE | ISSUE DATE | RETURN DATE\n";
+
+    book_history.open(filename, std::ios::in);
+    if (book_history.is_open())
+    {
+        std::string line;
+        while (getline(book_history, line))
+        {
+            std::cout << line << std::endl;
+        }
+        book_history.close();
+    }
+    else
+    {
+        std::cout << "\nError opening book history file.";
+    }
+}
+
+/*! \fn print_available_books()
+    @brief Prints the title, author and genre of the books set as "available" in the "res/books.txt" file.
+*/
+void print_available_books()
+{
+    std::fstream books_file;
+    std::vector<std::string> available_books;
+
+    books_file.open("res/books.txt", std::ios::in);
+    if (books_file.is_open())
+    {
+        std::string line;
+        while (getline(books_file, line))
+        {
+            std::vector<std::string> tokens = parse(line);
+            if (tokens[4] == "available")
+            {
+                std::string basic_info = "title: " + tokens[0] + " | author: " + tokens[1] + " | genre: " + tokens[2];
+                available_books.push_back(basic_info);
+            }
+        }
+        books_file.close();
+    }
+    else
+    {
+        std::cout << "\nError opening books file.";
+    }
+
+    for (const std::string &line : available_books)
+    {
+        std::cout << line << std::endl;
+    }
+}
+
+/*! \fn check_book_availability(const std::string &title)
+    @brief Checks if the book requested is available. Returns true if it is and false otherwise.
+    The main use of this function is to avoid that a book will be issued when it's not available. It will return false if the book is set as unavailable, if the book can't be found in the database or if there's an error opening the file.
+    @param title The title of the book that will be searched for in the "res/books.txt" file.
+*/
+bool check_book_availability(const std::string &title)
+{
+    std::fstream books_file;
+
+    books_file.open("res/books.txt", std::ios::in);
+    if (books_file.is_open())
+    {
+        std::string line;
+        while (getline(books_file, line))
+        {
+            std::vector<std::string> tokens = parse(line);
+            if (tokens[0] == title && tokens[4] == "available")
+            {
+                books_file.close();
+                return true;
+            }
+        }
+        books_file.close();
+        return false;
+    }
+    else
+    {
+        std::cout << "\nError opening books file.";
+        return false;
+    }
+}
+
+/*! \fn check_username_availability(const std::string &username)
+    @brief Checks if a requested username is available or not. Returns true if the username doesn't already exist in the "res/users.txt" file and false otherwise.
+    The main use of this function is to stop users from creating duplicate usernames, since many functions inside of the program depend on having unique usernames. It will return false if the username already exists or if there was an error opening the "res/users.txt" file.
+    @param username The username that will be searched for in the "res/users.txt" file.
+ */
+bool check_username_availability(const std::string &username)
+{
+    std::fstream users_file;
+
+    users_file.open("res/users.txt", std::ios::in);
+    if (users_file.is_open())
+    {
+        std::string line;
+        while (getline(users_file, line))
+        {
+            std::vector<std::string> tokens = parse(line);
+            // if the program finds the username in the users file, availability is false.
+            if (tokens[0] == username)
+            {
+                users_file.close();
+                return false;
+            }
+        }
+        users_file.close();
+        return true; // if the program doesnt't find the username, availability is true
+    }
+    else
+    {
+        std::cout << "\nError opening users file.";
+        return false;
+    }
+}
+
+/*! \fn check_title_availability(const std::string &title)
+
+The main use of this function is to stop users from creating duplicate book titles.
+*/
+bool check_title_availability(const std::string &title)
+{
+    std::fstream books_file;
+
+    books_file.open("res/books.txt", std::ios::in);
+    if (books_file.is_open())
+    {
+        std::string line;
+        while (getline(books_file, line))
+        {
+            std::vector<std::string> tokens = parse(line);
+            // if the program finds the title in the books file, availability is false.
+            if (tokens[0] == title)
+            {
+                books_file.close();
+                return false;
+            }
+        }
+        books_file.close();
+        return true; // if the program doesnt find the title, availability is true
+    }
+    else
+    {
+        std::cout << "\nError opening books file.";
+        return false;
+    }
+}
+
+/*! \fn check_in_issued(const std::string &title, const std::string &user)
+    @brief Checks if the given title is int the user's issued books list.
+    Looks for the specific title in the user's issued books list, that is, the books they haven't returned yet. Stops users from returning a book that isn't in their file.
+    @param title The title of the book being checked.
+    @param user The user whose list is read.
+ */
+bool check_in_issued(const std::string &title, const std::string &user)
+{
+    std::fstream issued_books;
+    std::string filename = "res/" + user + "_issued_books.txt";
+
+    issued_books.open(filename, std::ios::in);
+    if (issued_books.is_open())
+    {
+        std::string line;
+        while (getline(issued_books, line))
+        {
+            std::vector<std::string> tokens = parse(line);
+            if (tokens[0] == title)
+            {
+                issued_books.close();
+                return true;
+            }
+        }
+        issued_books.close();
+        return false;
+    }
+    else
+    {
+        std::cout << "\nError opening issued books file.";
+        return false;
+    }
+}
+
+void print_issued_books(const std::string &user)
+{
+    std::string filename = "res/" + user + "_issued_books.txt";
+    std::fstream issued_books;
+
+    // shows file formatting
+    std::cout << "TITLE | ISSUE DATE | RETURN DATE\n";
+
+    issued_books.open(filename, std::ios::in);
+    if (issued_books.is_open())
+    {
+        std::string line;
+        while (getline(issued_books, line))
+        {
+            std::cout << line << std::endl;
+        }
+        issued_books.close();
+    }
+    else
+    {
+        std::cout << "\nError opening issued books file.";
+    }
+}
+
+struct result
+{
+    user user;
+    bool error;
+};
+
+result authenticate(const std::string &username, const std::string &password)
+{
+    result result;
+    users_file.open("res/users.txt", std::ios::in);
+    if (users_file.is_open())
+    {
+        std::string line;
+        while (getline(users_file, line))
+        {
+            std::vector<std::string> tokens = parse(line);
+            if (tokens[0] == username && tokens[2] == password)
+            {
+                users_file.close();
+                result.user.set_username(tokens[0]);
+                result.user.set_name(tokens[1]);
+                result.user.set_password(tokens[2]);
+                result.user.set_email(tokens[3]);
+                result.user.set_user_type(tokens[4]);
+                result.error = false;
+
+                return result;
+            }
+        }
+    }
+    else
+    {
+        std::cout << "Error opening users file";
+    }
+    result.error = true;
+    return result;
+}
+
+user login()
+{
+    std::string username, password, line;
+
+    std::cout << "\nEnter username: ";
+    std::cin >> username;
+    std::cout << "\nEnter password: ";
+    std::cin >> password;
+
+    while (true)
+    {
+        auto result = authenticate(username, password);
+        if (!result.error)
+        {
+            std::cout << "Login sucessfull." << std::endl;
+            return result.user;
+        }
+        std::cout << "Username or password incorrect. Try again.";
+        std::cout << "Enter username: ";
+        getline(std::cin, username);
+        std::cout << "Enter password: ";
+        getline(std::cin, password);
+    }
+}
+
+void user_menu(const user &user)
+{
+    std::string usertype = user.get_user_type();
+    char user_input;
+
+    if (usertype == "user")
+    {
+        while (true)
+        {
+            clear_terminal();
+
+            std::cout << "\nEnter action:\n1: View library collection\n2: View my currently issued books\n3: View my book history\nq: log out\n";
+            std::cin >> user_input;
+            switch (user_input)
+            {
+            case '1':
+                print_books();
+                break;
+            case '2':
+                print_issued_books(user.get_username());
+                check_go_back();
+                break;
+            case '3':
+                print_book_history(user.get_username());
+                check_go_back();
+                break;
+            case 'q':
+                return;
+            default:
+                std::cout << "\nInvalid input. Please try again.";
+                sleep(2);
+                break;
+            }
+        }
+    }
+    else if (usertype == "admin")
+    {
+        while (true)
+        {
+            clear_terminal();
+
+            std::cout << "\nEnter action:\n1: View library collection\n2: View users\n3: Issue a book\n4: Return a book\n5: Create new user\n6: Create new book\nq: log out\n";
+            std::cin >> user_input;
+
+            switch (user_input)
+            {
+            case '1':
+                print_books();
+                break;
+            case '2':
+                print_users();
+                break;
+            case '3':
+                issue_book();
+                break;
+            case '4':
+                return_book();
+                break;
+            case '5':
+                create_user();
+                break;
+            case '6':
+                create_book();
+                break;
+            case 'q':
+                return;
+            default:
+                std::cout << "\nInvalid input. Please try again.";
+                sleep(2);
+                break;
+            }
+        }
+    }
 }

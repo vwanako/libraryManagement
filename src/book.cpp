@@ -3,6 +3,8 @@
 #include <string>
 #include <book.h>
 
+extern std::fstream books_file;
+
 book::book(std::string title, std::string author, std::string genre, float price)
 {
     set_title(title);
@@ -14,7 +16,6 @@ book::book(std::string title, std::string author, std::string genre, float price
 
 void book::save_to_file()
 {
-    std::fstream books_file;
     books_file.open("books.txt", std::ios::app);
     if (books_file.is_open())
     {

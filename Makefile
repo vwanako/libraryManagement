@@ -7,7 +7,7 @@ INCDIR = inc
 LIBDIR = lib
 OBJDIR = obj
 SRCDIR = src
-FLAGS = -O3 -Wall
+FLAGS = -O3 -Wall -Wextra -g3
 ECHO ?=
 APP ?=
 

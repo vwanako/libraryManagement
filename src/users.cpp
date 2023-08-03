@@ -3,6 +3,8 @@
 #include <string>
 #include <users.h>
 
+extern std::fstream users_file;
+
 user::user(std::string name, std::string username, std::string password, std::string email, std::string user_type)
 {
     set_name(name);
@@ -16,8 +18,6 @@ user::user() : name(""), username(""), password(""), email(""), user_type(""){};
 
 void user::save_to_file()
 {
-    std::fstream users_file;
-
     users_file.open("users.txt", std::ios::app);
     if (users_file.is_open())
     {
