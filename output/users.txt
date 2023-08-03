@@ -1,2 +1,0 @@
-admin,john doe,1234,johndoe@mail.com,admin
-test,test,123,test@mail.com,user
