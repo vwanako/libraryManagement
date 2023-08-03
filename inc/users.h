@@ -1,8 +1,6 @@
 #ifndef USERS_H
 #define USERS_H
 
-std::fstream users_file;
-
 class user
 {
 protected:

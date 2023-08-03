@@ -12,6 +12,9 @@
 #include <utils.h>
 #include <book.h>
 
+std::fstream users_file;
+std::fstream books_file;
+
 /*! \fn print_users()
     @brief Prints all the users in the "users.txt" file and their information
 */

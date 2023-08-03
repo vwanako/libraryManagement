@@ -1,8 +1,6 @@
 #ifndef BOOK_H
 #define BOOK_H
 
-std::fstream books_file;
-
 class book
 {
 private:

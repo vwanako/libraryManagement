@@ -35,7 +35,7 @@ std::vector<std::string> parse(const std::string &line)
     std::vector<std::string> tokens;
     std::string temp_line;
 
-    for (int i = 0; i < line.size(); i++)
+    for (unsigned int i = 0; i < line.size(); i++)
     {
         if (line[i] == ',')
         {
