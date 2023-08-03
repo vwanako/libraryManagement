@@ -12,16 +12,16 @@
 #include <utils.h>
 #include <book.h>
 
-std::fstream users_file;
-std::fstream books_file;
+extern std::fstream users_file;
+extern std::fstream books_file;
 
 /*! \fn print_users()
-    @brief Prints all the users in the "users.txt" file and their information
+    @brief Prints all the users in the "res/users.txt" file and their information
 */
 void print_users()
 {
     std::cout << "USERNAME | NAME | PASSWORD | EMAIL | USER TYPE\n";
-    users_file.open("users.txt", std::ios::in);
+    users_file.open("res/users.txt", std::ios::in);
     if (users_file.is_open())
     {
         std::string line;
@@ -39,13 +39,13 @@ void print_users()
 }
 
 /*! \fn print_books()
-    @brief Prints all the books in the "books.txt" file and their information
+    @brief Prints all the books in the "res/books.txt" file and their information
 */
 void print_books()
 {
     std::cout << "TITLE | AUTHOR | GENRE | PRICE | AVAILABILITY STATUS\n";
 
-    books_file.open("books.txt", std::ios::in);
+    books_file.open("res/books.txt", std::ios::in);
     if (books_file.is_open())
     {
         std::string line;
@@ -68,7 +68,7 @@ void print_books()
 */
 void print_book_history(const std::string &user)
 {
-    std::string filename = user + "_book_history.txt";
+    std::string filename = "res/" + user + "_book_history.txt";
     std::fstream book_history;
 
     std::cout << "TITLE | ISSUE DATE | RETURN DATE\n";
@@ -90,14 +90,14 @@ void print_book_history(const std::string &user)
 }
 
 /*! \fn print_available_books()
-    @brief Prints the title, author and genre of the books set as "available" in the "books.txt" file.
+    @brief Prints the title, author and genre of the books set as "available" in the "res/books.txt" file.
 */
 void print_available_books()
 {
     std::fstream books_file;
     std::vector<std::string> available_books;
 
-    books_file.open("books.txt", std::ios::in);
+    books_file.open("res/books.txt", std::ios::in);
     if (books_file.is_open())
     {
         std::string line;
@@ -126,13 +126,13 @@ void print_available_books()
 /*! \fn check_book_availability(const std::string &title)
     @brief Checks if the book requested is available. Returns true if it is and false otherwise.
     The main use of this function is to avoid that a book will be issued when it's not available. It will return false if the book is set as unavailable, if the book can't be found in the database or if there's an error opening the file.
-    @param title The title of the book that will be searched for in the "books.txt" file.
+    @param title The title of the book that will be searched for in the "res/books.txt" file.
 */
 bool check_book_availability(const std::string &title)
 {
     std::fstream books_file;
 
-    books_file.open("books.txt", std::ios::in);
+    books_file.open("res/books.txt", std::ios::in);
     if (books_file.is_open())
     {
         std::string line;
@@ -156,15 +156,15 @@ bool check_book_availability(const std::string &title)
 }
 
 /*! \fn check_username_availability(const std::string &username)
-    @brief Checks if a requested username is available or not. Returns true if the username doesn't already exist in the "users.txt" file and false otherwise.
-    The main use of this function is to stop users from creating duplicate usernames, since many functions inside of the program depend on having unique usernames. It will return false if the username already exists or if there was an error opening the "users.txt" file.
-    @param username The username that will be searched for in the "users.txt" file.
+    @brief Checks if a requested username is available or not. Returns true if the username doesn't already exist in the "res/users.txt" file and false otherwise.
+    The main use of this function is to stop users from creating duplicate usernames, since many functions inside of the program depend on having unique usernames. It will return false if the username already exists or if there was an error opening the "res/users.txt" file.
+    @param username The username that will be searched for in the "res/users.txt" file.
  */
 bool check_username_availability(const std::string &username)
 {
     std::fstream users_file;
 
-    users_file.open("users.txt", std::ios::in);
+    users_file.open("res/users.txt", std::ios::in);
     if (users_file.is_open())
     {
         std::string line;
@@ -196,7 +196,7 @@ bool check_title_availability(const std::string &title)
 {
     std::fstream books_file;
 
-    books_file.open("books.txt", std::ios::in);
+    books_file.open("res/books.txt", std::ios::in);
     if (books_file.is_open())
     {
         std::string line;
@@ -223,7 +223,7 @@ bool check_title_availability(const std::string &title)
 bool check_in_issued(const std::string &title, const std::string &user)
 {
     std::fstream issued_books;
-    std::string filename = user + "_issued_books.txt";
+    std::string filename = "res/" + user + "_issued_books.txt";
 
     issued_books.open(filename, std::ios::in);
     if (issued_books.is_open())
@@ -250,7 +250,7 @@ bool check_in_issued(const std::string &title, const std::string &user)
 
 void print_issued_books(const std::string &user)
 {
-    std::string filename = user + "_issued_books.txt";
+    std::string filename = "res/" + user + "_issued_books.txt";
     std::fstream issued_books;
 
     // shows file formatting
@@ -401,7 +401,7 @@ struct result
 result authenticate(const std::string &username, const std::string &password)
 {
     result result;
-    users_file.open("users.txt", std::ios::in);
+    users_file.open("res/users.txt", std::ios::in);
     if (users_file.is_open())
     {
         std::string line;
@@ -441,8 +441,8 @@ void issue_book()
     getline(std::cin, username);
 
     // the user's book history is formatted as username_bookHistory.txt, here, we set the file
-    std::string history_filename = username + "_book_history.txt";
-    std::string issued_filename = username + "_issued_books.txt";
+    std::string history_filename = "res/" + username + "_book_history.txt";
+    std::string issued_filename = "res/" + username + "_issued_books.txt";
     std::fstream book_history, books_file, issued_books;
 
     // since info will be used to manipulate three separate files, we will declare and receive it outside the conditions, so we don't need to ask for input twice.
@@ -497,7 +497,7 @@ void issue_book()
     std::vector<std::string> updated_lines;
 
     // opens the books file (where the information of the library collection is stored) in read mode
-    books_file.open("books.txt", std::ios::in);
+    books_file.open("res/books.txt", std::ios::in);
     if (books_file.is_open())
     {
         // sets the pointer to the beginning of the file
@@ -535,7 +535,7 @@ void issue_book()
     }
 
     // opens the file again in write mode
-    books_file.open("books.txt", std::ios::out | std::ios::trunc);
+    books_file.open("res/books.txt", std::ios::out | std::ios::trunc);
     // overwrites the file using each element of the updated lines std::vector as a line in the file.
     for (const std::string &updated_line : updated_lines)
     {
@@ -560,7 +560,7 @@ void return_book()
     std::cout << username << "'s book history: \n";
     print_book_history(username);
 
-    std::string issued_filename = username + "_issued_books.txt";
+    std::string issued_filename = "res/" + username + "_issued_books.txt";
     std::fstream issued_books;
 
     std::string title;
@@ -615,7 +615,7 @@ void return_book()
     std::vector<std::string> updated_lines;
 
     // explanation is the same as the issue book function, except that it changes the token from "false" to "true"
-    books_file.open("books.txt", std::ios::in);
+    books_file.open("res/books.txt", std::ios::in);
     if (books_file.is_open())
     {
         books_file.seekg(0);
@@ -647,7 +647,7 @@ void return_book()
     }
 
     // opens the file again in write mode
-    books_file.open("books.txt", std::ios::out | std::ios::trunc);
+    books_file.open("res/books.txt", std::ios::out | std::ios::trunc);
     // overwrites the file using each element of the updated lines std::vector as a line in the file.
     for (const std::string &updated_line : updated_lines)
     {
