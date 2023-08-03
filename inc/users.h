@@ -11,16 +11,9 @@ protected:
 public:
     // constructors
 
-    user(std::string name, std::string username, std::string password, std::string email, std::string user_type)
-    {
-        set_name(name);
-        set_username(username);
-        set_password(password);
-        set_email(email);
-        set_user_type(user_type);
-    }
+    user(std::string name, std::string username, std::string password, std::string email, std::string user_type);
 
-    user() : name(""), username(""), password(""), email(""), user_type(""){};
+    user();
 
     void save_to_file();
 
@@ -47,18 +40,14 @@ public:
     std::fstream issued_books;
     std::fstream book_history;
 
-    regular_user(std::string name, std::string username, std::string password, std::string email) : user(name, username, password, email, "user")
-    {
-        std::string book_history_filename = username + "_book_history.txt";
-        std::string issued_books_filename = username + "_issued_books.txt";
-    }
+    regular_user(std::string name, std::string username, std::string password, std::string email);
 };
 
 class admin : public user
 {
 public:
     // constructor
-    admin(std::string name, std::string username, std::string password, std::string email) : user(name, username, password, email, "admin"){};
+    admin(std::string name, std::string username, std::string password, std::string email);
 };
 
 #endif // USERS_H

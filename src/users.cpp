@@ -3,6 +3,17 @@
 #include <string>
 #include <users.h>
 
+user::user(std::string name, std::string username, std::string password, std::string email, std::string user_type)
+{
+    set_name(name);
+    set_username(username);
+    set_password(password);
+    set_email(email);
+    set_user_type(user_type);
+}
+
+user::user() : name(""), username(""), password(""), email(""), user_type(""){};
+
 void user::save_to_file()
 {
     std::fstream users_file;
