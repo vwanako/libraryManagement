@@ -3,6 +3,7 @@
 #include <unistd.h>
 #include <algorithm>
 #include <vector>
+#include <cstdio>
 
 #include <library.h>
 
@@ -90,6 +91,8 @@ void delete_user()
     std::cout << "\nType the username you want to delete: ";
     std::cin >> username;
 
+    std::string issued_filename = "res/" + username + "_issued_books.txt", history_filename = "res/" + username + "_book_history.txt";
+
     std::vector<std::string> updated_file;
 
     users_file.open("res/users.txt", std::ios::in);
@@ -120,6 +123,9 @@ void delete_user()
             users_file << updated_line << std::endl;
         }
     }
+
+    std::remove(issued_filename.c_str());
+    std::remove(history_filename.c_str());
 }
 
 void create_book()
