@@ -436,7 +436,7 @@ void user_menu(const user &user)
         {
             clear_terminal();
 
-            std::cout << "\nEnter action:\n1: View library collection\n2: View users\n3: Issue a book\n4: Return a book\n5: Create new user\n6: Delete existing user\n7: Create new book\nq: log out\n";
+            std::cout << "\nEnter action:\n1: View library collection\n2: View users\n3: Issue a book\n4: Return a book\n5: Create new user\n6: Delete existing user\n7: Create new book\n8:Delete existing book\nq: log out\n";
             std::cin >> user_input;
 
             switch (user_input)
@@ -461,6 +461,9 @@ void user_menu(const user &user)
                 break;
             case '7':
                 create_book();
+                break;
+            case '8':
+                delete_book();
                 break;
             case 'q':
                 return;

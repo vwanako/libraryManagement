@@ -116,16 +116,16 @@ void delete_user()
     }
 
     users_file.open("res/users.txt", std::ios::out | std::ios::trunc);
-    if (users_file.is_open())
+    for (const std::string &updated_line : updated_file)
     {
-        for (const std::string &updated_line : updated_file)
-        {
-            users_file << updated_line << std::endl;
-        }
+        users_file << updated_line << std::endl;
     }
 
     std::remove(issued_filename.c_str());
     std::remove(history_filename.c_str());
+
+    std::cout << "\nUser deleted sucessfully." << std::endl;
+    sleep(2);
 }
 
 void create_book()
@@ -172,6 +172,41 @@ void create_book()
 
     // waits for user input before finalizing function (explanaition in function declaration)
     check_go_back();
+}
+
+void delete_book()
+{
+    std::string title;
+    std::cout << "\nType the book title you want to delete: ";
+    std::cin >> title;
+
+    std::vector<std::string> updated_file;
+
+    books_file.open("res/books.txt", std::ios::in);
+    if (books_file.is_open())
+    {
+        std::string line;
+        while (getline(books_file, line))
+        {
+            std::vector<std::string> tokens = parse(line);
+            if (tokens[0] != title)
+            {
+                updated_file.push_back(line);
+            }
+        }
+        books_file.close();
+    }
+    else
+    {
+        std::cout << "\nError opening file." << std::endl;
+    }
+
+    books_file.open("res/books.txt", std::ios::out | std::ios::trunc);
+
+    for (const std::string &updated_line : updated_file)
+    {
+        books_file << updated_line << std::endl;
+    }
 }
 
 void issue_book()

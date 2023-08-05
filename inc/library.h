@@ -8,6 +8,7 @@
 void create_user();
 void delete_user();
 void create_book();
+void delete_book();
 void issue_book();
 void return_book();
 
