@@ -84,6 +84,44 @@ void create_user()
     check_go_back();
 }
 
+void delete_user()
+{
+    std::string username;
+    std::cout << "\nType the username you want to delete: ";
+    std::cin >> username;
+
+    std::vector<std::string> updated_file;
+
+    users_file.open("res/users.txt", std::ios::in);
+    if (users_file.is_open())
+    {
+        std::string line;
+        while (getline(users_file, line))
+        {
+            std::vector<std::string> tokens = parse(line);
+
+            if (tokens[0] != username)
+            {
+                updated_file.push_back(line);
+            }
+        }
+        users_file.close();
+    }
+    else
+    {
+        std::cerr << "\nError opening file." << std::endl;
+    }
+
+    users_file.open("res/users.txt", std::ios::out | std::ios::trunc);
+    if (users_file.is_open())
+    {
+        for (const std::string &updated_line : updated_file)
+        {
+            users_file << updated_line << std::endl;
+        }
+    }
+}
+
 void create_book()
 {
     std::string temp_title, temp_author, temp_genre;

@@ -18,7 +18,7 @@ user::user() : name(""), username(""), password(""), email(""), user_type(""){};
 
 void user::save_to_file()
 {
-    users_file.open("users.txt", std::ios::app);
+    users_file.open("res/users.txt", std::ios::app);
     if (users_file.is_open())
     {
         users_file << username << "," << name << "," << password << "," << email << "," << user_type << std::endl;
@@ -80,7 +80,7 @@ std::string user::get_user_type() const
 
 regular_user::regular_user(std::string name, std::string username, std::string password, std::string email) : user(name, username, password, email, "user") // Call the base class constructor using member initializer list. Adds "user", so that when when admins create a new "user" object, they're a regular_user object.
 {
-    std::string issued_books_filename = username + "_issued_books.txt";
+    std::string issued_books_filename = "res/" + username + "_issued_books.txt";
 
     issued_books.open(issued_books_filename, std::fstream::out | std::fstream::app);
     if (!issued_books.is_open())
@@ -90,7 +90,7 @@ regular_user::regular_user(std::string name, std::string username, std::string p
     issued_books.close();
 
     // Create book_history file for regular_user
-    std::string book_history_filename = username + "_book_history.txt";
+    std::string book_history_filename = "res/" + username + "_book_history.txt";
 
     book_history.open(book_history_filename, std::ios::out | std::ios::app);
     if (!book_history.is_open())

@@ -16,7 +16,7 @@ book::book(std::string title, std::string author, std::string genre, float price
 
 void book::save_to_file()
 {
-    books_file.open("books.txt", std::ios::app);
+    books_file.open("res/books.txt", std::ios::app);
     if (books_file.is_open())
     {
         books_file << title << "," << author << "," << genre << "," << price << "," << is_available() << std::endl;

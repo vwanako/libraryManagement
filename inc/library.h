@@ -6,6 +6,7 @@
 #include <book.h>
 
 void create_user();
+void delete_user();
 void create_book();
 void issue_book();
 void return_book();
