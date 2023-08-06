@@ -219,6 +219,18 @@ void issue_book()
     std::cin.ignore();
     getline(std::cin, username);
 
+    while (!check_username_exists(username))
+    {
+        std::cout << "\nThe username " << username << " does not exist. Please try again or press q to finalize issuing process.\n";
+        getline(std::cin, username);
+        if (username == "q")
+        {
+            std::cout << "\nIssue process finalized. Redirecting to menu...";
+            sleep(2);
+            return;
+        }
+    }
+
     // the user's book history is formatted as username_bookHistory.txt, here, we set the file
     std::string history_filename = "res/" + username + "_book_history.txt";
     std::string issued_filename = "res/" + username + "_issued_books.txt";

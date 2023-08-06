@@ -15,6 +15,7 @@ void print_book_history(const std::string &user);
 void print_available_books();
 bool check_book_availability(const std::string &title);
 bool check_username_availability(const std::string &username);
+bool check_username_exists(const std::string &username);
 bool check_title_availability(const std::string &title);
 bool check_in_issued(const std::string &title, const std::string &user);
 void print_issued_books(const std::string &user);

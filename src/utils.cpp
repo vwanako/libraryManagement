@@ -4,6 +4,7 @@
 #include <iostream>
 #include <unistd.h>
 #include <utils.h>
+#include <limits>
 
 extern std::fstream users_file;
 extern std::fstream books_file;
@@ -184,8 +185,6 @@ void print_available_books()
 */
 bool check_book_availability(const std::string &title)
 {
-    std::fstream books_file;
-
     books_file.open("res/books.txt", std::ios::in);
     if (books_file.is_open())
     {
@@ -216,8 +215,6 @@ bool check_book_availability(const std::string &title)
  */
 bool check_username_availability(const std::string &username)
 {
-    std::fstream users_file;
-
     users_file.open("res/users.txt", std::ios::in);
     if (users_file.is_open())
     {
@@ -242,14 +239,37 @@ bool check_username_availability(const std::string &username)
     }
 }
 
+bool check_username_exists(const std::string &username)
+{
+    users_file.open("res/users.txt", std::ios::in);
+    if (users_file.is_open())
+    {
+        std::string line;
+        while (getline(users_file, line))
+        {
+            std::vector<std::string> tokens = parse(line);
+            if (tokens[0] == username)
+            {
+                users_file.close();
+                return true;
+            }
+        }
+        users_file.close();
+        return false;
+    }
+    else
+    {
+        std::cout << "\nError opening users file.";
+        return false;
+    }
+}
+
 /*! \fn check_title_availability(const std::string &title)
 
 The main use of this function is to stop users from creating duplicate book titles.
 */
 bool check_title_availability(const std::string &title)
 {
-    std::fstream books_file;
-
     books_file.open("res/books.txt", std::ios::in);
     if (books_file.is_open())
     {
@@ -376,6 +396,20 @@ user login()
 
     std::cout << "\nEnter username: ";
     std::cin >> username;
+
+    while (!check_username_exists(username))
+    {
+        std::cout << "\nThe username " << username << " does not exist. Please try again or press q to finalize login process.\n";
+        std::cin >> username;
+
+        if (username == "q")
+        {
+            std::cout << "\nLogin process finalized.";
+            sleep(2);
+            return {};
+        }
+    }
+
     std::cout << "\nEnter password: ";
     std::cin >> password;
 
@@ -388,9 +422,12 @@ user login()
             return result.user;
         }
         std::cout << "Username or password incorrect. Try again.";
-        std::cout << "Enter username: ";
+
+        std::cin.clear();
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        std::cout << "\nEnter username: ";
         getline(std::cin, username);
-        std::cout << "Enter password: ";
+        std::cout << "\nEnter password: ";
         getline(std::cin, password);
     }
 }
@@ -436,7 +473,7 @@ void user_menu(const user &user)
         {
             clear_terminal();
 
-            std::cout << "\nEnter action:\n1: View library collection\n2: View users\n3: Issue a book\n4: Return a book\n5: Create new user\n6: Delete existing user\n7: Create new book\n8:Delete existing book\nq: log out\n";
+            std::cout << "\nEnter action:\n1: View library collection\n2: View users\n3: Issue a book\n4: Return a book\n5: Create new user\n6: Delete existing user\n7: Create new book\n8: Delete existing book\nq: log out\n";
             std::cin >> user_input;
 
             switch (user_input)
