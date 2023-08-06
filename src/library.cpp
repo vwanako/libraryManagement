@@ -222,7 +222,7 @@ void issue_book()
     while (!check_username_exists(username))
     {
         std::cout << "\nThe username " << username << " does not exist. Please try again or press q to finalize issuing process.\n";
-        getline(std::cin, username);
+        std::cin >> username;
         if (username == "q")
         {
             std::cout << "\nIssue process finalized. Redirecting to menu...";
@@ -345,7 +345,19 @@ void return_book()
     std::string username;
     std::cout << "\nEnter the borrower's username: ";
     std::cin.ignore();
-    getline(std::cin, username);
+    std::cin >> username;
+
+    while (!check_username_exists(username))
+    {
+        std::cout << "\nThe username " << username << " does not exist. Please try again or press q to finalize returning process.\n";
+        std::cin >> username;
+        if (username == "q")
+        {
+            std::cout << "\nReturning process finalized. Redirecting to menu...";
+            sleep(2);
+            return;
+        }
+    }
 
     // prints the user's book history to make it easier to return books.
     std::cout << username << "'s book history: \n";
