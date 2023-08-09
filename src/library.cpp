@@ -3,6 +3,7 @@
 #include <unistd.h>
 #include <algorithm>
 #include <vector>
+#include <limits>
 #include <cstdio>
 
 #include <library.h>
@@ -17,11 +18,22 @@ void create_user()
     std::string temp_name, temp_username, temp_password, temp_email, temp_user_type;
 
     std::cout << "New user menu.\nName: ";
-    std::cin.ignore();
     getline(std::cin, temp_name);
+    void clear_input_buffers();
+
     std::cout << "Username: ";
     getline(std::cin, temp_username);
 
+    while (!validate_string(temp_name))
+    {
+        std::cout << "\nName cannot contain commas. Please try again.\n";
+        std::cin >> temp_name;
+    }
+    while (!validate_string(temp_username))
+    {
+        std::cout << "\nUsername cannot contain commas. Please try again.\n";
+        std::cin >> temp_username;
+    }
     while (!check_username_availability(temp_username))
     {
         std::cout << "The username '" << temp_username << "' already exists. Please try again or press 'q' to finalize user creation process.\n";
@@ -36,8 +48,23 @@ void create_user()
 
     std::cout << "Password: ";
     getline(std::cin, temp_password);
+    void clear_input_buffers();
+
+    while (!validate_string(temp_password))
+    {
+        std::cout << "\nPassword cannot contain commas. Please try again.\n";
+        std::cin >> temp_password;
+    }
+
     std::cout << "Email: ";
     getline(std::cin, temp_email);
+    void clear_input_buffers();
+
+    while (!validate_string(temp_email))
+    {
+        std::cout << "\nEmail cannot contain commas. Please try again.\n";
+        std::cin >> temp_email;
+    }
 
     // the user type variable can only be two things: 'admin' or 'user'. we will use this loop to validate the input, making sure to only accept those values.
     while (true)
@@ -137,6 +164,12 @@ void create_book()
     std::cin.ignore();
     getline(std::cin, temp_title);
 
+    while (!validate_string(temp_title))
+    {
+        std::cout << "\nTitle cannot contain commas. Please try again.\n";
+        std::cin >> temp_title;
+    }
+
     while (!check_title_availability(temp_title))
     {
         std::cout << "The book '" << temp_title << "' already exists. Please try again or press 'q' to finalize book creation process.\n";
@@ -151,8 +184,22 @@ void create_book()
 
     std::cout << "Author: ";
     getline(std::cin, temp_author);
+
+    while (!validate_string(temp_author))
+    {
+        std::cout << "\nGenre cannot contain commas. Please try again.\n";
+        std::cin >> temp_author;
+    }
+
     std::cout << "Genre: ";
     getline(std::cin, temp_genre);
+
+    while (!validate_string(temp_genre))
+    {
+        std::cout << "\nGenre cannot contain commas. Please try again.\n";
+        std::cin >> temp_genre;
+    }
+
     std::cout << "Price: ";
     std::cin >> temp_price;
 

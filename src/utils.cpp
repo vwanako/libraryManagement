@@ -70,6 +70,18 @@ std::vector<std::string> parse(const std::string &line)
     return tokens;
 }
 
+bool validate_string(const std::string &word)
+{
+    for (int i = 0; i < word.length(); i++)
+    {
+        if (word[i] == ',')
+        {
+            return false;
+        }
+    }
+    return true;
+}
+
 /*! \fn print_users()
     @brief Prints all the users in the "res/users.txt" file and their information
 */
@@ -511,4 +523,10 @@ void user_menu(const user &user)
             }
         }
     }
+}
+
+void clear_input_buffer()
+{
+    std::cin.clear();
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 }

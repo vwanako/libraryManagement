@@ -9,6 +9,7 @@
 void clear_terminal();
 void check_go_back();
 std::vector<std::string> parse(const std::string &line);
+bool validate_string(const std::string &word);
 void print_users();
 void print_books();
 void print_book_history(const std::string &user);
@@ -23,5 +24,6 @@ struct result;
 result authenticate(const std::string &username, const std::string &password);
 user login();
 void user_menu(const user &user);
+void clear_input_buffers();
 
 #endif // UTILS_H
